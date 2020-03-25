@@ -7,30 +7,23 @@ import java.net.SocketAddress;
 
 public class Network {
 
-    private Socket socketConnection;
-    private BufferedReader bufferedReader;
-    private SocketAddress socketAddress = new InetSocketAddress("127.0.0.1", 7789);
+    public String hostname = "127.0.0.1";
+    public int port = 7789;
+    public int timeout = 30;
+
+    private Connection connection;
 
     public Network() {
-        this.socketConnection = new Socket();
         try {
-            socketConnection.connect(socketAddress, 30);
-            bufferedReader = new BufferedReader(new InputStreamReader(socketConnection.getInputStream()));
-            //dataOutputStream = new DataOutputStream(socketConnection.getOutputStream());
-            //dataOutputStream.writeChars("login Test");
-
-            System.out.println(bufferedReader.readLine());
-            System.out.println(bufferedReader.readLine());
-
-
-
-
+            connection = new Connection(hostname, port, timeout);
+            Thread thread = new Thread(connection);
+            thread.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
+
+
 
 
 

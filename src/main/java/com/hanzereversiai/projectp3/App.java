@@ -1,5 +1,6 @@
 package com.hanzereversiai.projectp3;
 
+import com.hanzereversiai.projectp3.networking.Network;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -17,9 +18,14 @@ public class App extends Application {
         stage.setScene(new Scene(root, 400, 200));
         stage.setTitle("Reversi AI Project");
         stage.show();
+
+
     }
 
     public static void main(String[] args) {
+
+        Network network = new Network();
+
         launch(args);
     }
 }
