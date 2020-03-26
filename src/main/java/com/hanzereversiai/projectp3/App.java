@@ -1,20 +1,27 @@
 package com.hanzereversiai.projectp3;
 
+import com.hanzereversiai.projectp3.ui.ConnectionPanel;
+import com.hanzereversiai.projectp3.ui.events.ConnectionSucceededEvent;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class App extends Application {
+    Stage stage;
+    Scene connectionScene;
+
     @Override
     public void start(Stage stage) {
-        VBox root = new VBox();
+        this.stage = stage;
 
-        Label button = new Label("This is an example stage");
-        root.getChildren().add(button);
+        ConnectionPanel connectionPanel = new ConnectionPanel();
+        connectionPanel.addEventHandler(ConnectionSucceededEvent.CONNECTION_SUCCEEDED_EVENT_TYPE,
+                e -> stage.setScene(new Scene(new Pane())));
 
-        stage.setScene(new Scene(root, 400, 200));
+        this.connectionScene = new Scene(connectionPanel);
+
+        stage.setScene(connectionScene);
         stage.setTitle("Reversi AI Project");
         stage.show();
     }
