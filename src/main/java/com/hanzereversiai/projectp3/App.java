@@ -1,44 +1,37 @@
 package com.hanzereversiai.projectp3;
 
-import com.hanzereversiai.projectp3.ui.ConnectionPanel;
-import com.hanzereversiai.projectp3.ui.events.ConnectionSucceededEvent;
 import com.hanzereversiai.projectp3.networking.Network;
+import com.hanzereversiai.projectp3.ui.ConnectionPanel;
+import com.hanzereversiai.projectp3.ui.events.ConnectionRaisedEvent;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class App extends Application {
-    Stage stage;
-    Scene connectionScene;
+    Network network;
+    StackPane rootStackPane;
 
     @Override
     public void start(Stage stage) {
-        this.stage = stage;
+        rootStackPane = new StackPane();
 
         ConnectionPanel connectionPanel = new ConnectionPanel();
-        connectionPanel.addEventHandler(ConnectionSucceededEvent.CONNECTION_SUCCEEDED_EVENT_TYPE,
-                e -> stage.setScene(new Scene(new Pane())));
+        connectionPanel.addEventHandler(ConnectionRaisedEvent.CONNECTION_RAISED_EVENT_TYPE,
+                e -> onConnectionRaised(e.getNetwork()));
+        rootStackPane.getChildren().add(connectionPanel);
 
-        this.connectionScene = new Scene(connectionPanel);
-
-        stage.setScene(connectionScene);
+        stage.setScene(new Scene(rootStackPane));
         stage.setTitle("Reversi AI Project");
         stage.show();
+    }
 
-
+    public void onConnectionRaised(Network network) {
+        this.network = network;
+        rootStackPane.getChildren().remove(0);
     }
 
     public static void main(String[] args) {
-
-        try {
-            Network network = new Network();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         launch(args);
     }
 }

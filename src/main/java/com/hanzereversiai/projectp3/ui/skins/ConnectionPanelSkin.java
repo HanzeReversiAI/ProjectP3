@@ -10,6 +10,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 public class ConnectionPanelSkin extends SkinBase<ConnectionPanel> {
+    Label errorLabel;
+
     public ConnectionPanelSkin(ConnectionPanel connectionPanel) {
         super(connectionPanel);
         ConnectionPanelBehavior connectionPanelBehavior = connectionPanel.getConnectionPanelBehavior();
@@ -43,15 +45,26 @@ public class ConnectionPanelSkin extends SkinBase<ConnectionPanel> {
         vBox.getChildren().add(portTextField);
 
         // Error label
-        Label errorLabel = new Label("ERROR TEXT");
+        errorLabel = new Label("ERROR TEXT");
         errorLabel.setVisible(false);
         errorLabel.getStyleClass().add("error-label");
         vBox.getChildren().add(errorLabel);
 
         // Connect button
         Button connectButton = new Button("Connect");
-        connectButton.setOnAction(e -> connectionPanelBehavior.onConnectButtonActivated());
+        connectButton.setOnAction(e -> connectionPanelBehavior.onConnectButtonActivated(
+                ipTextField.getText(), portTextField.getText()));
         GridPane.setHalignment(connectButton, HPos.CENTER);
         vBox.getChildren().add(connectButton);
+    }
+
+    public void setErrorLabel(String text) {
+        errorLabel.setText(text);
+        errorLabel.setVisible(true);
+    }
+
+    public void resetErrorLabel() {
+        errorLabel.setText("");
+        errorLabel.setVisible(false);
     }
 }
