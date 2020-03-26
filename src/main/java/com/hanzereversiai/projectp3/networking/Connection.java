@@ -3,7 +3,6 @@ package com.hanzereversiai.projectp3.networking;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 
 public class Connection implements Runnable {
 

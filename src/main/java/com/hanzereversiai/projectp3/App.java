@@ -7,6 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class App extends Application {
     @Override
     public void start(Stage stage) {
@@ -24,7 +26,11 @@ public class App extends Application {
 
     public static void main(String[] args) {
 
-        Network network = new Network();
+        try {
+            Network network = new Network();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         launch(args);
     }
