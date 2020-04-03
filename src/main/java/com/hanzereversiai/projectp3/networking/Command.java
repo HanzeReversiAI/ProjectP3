@@ -13,8 +13,10 @@ public enum Command {
         switch (command) {
             case LOGIN:
                 connection.send("login" + argument);
+                break;
             case LOGOUT:
                 connection.send("logout");
+                break;
         }
 
 
