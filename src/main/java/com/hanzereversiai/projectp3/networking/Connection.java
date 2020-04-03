@@ -37,5 +37,7 @@ public class Connection {
         System.out.println("DEBUG: Connection initialized");
     }
 
-
+    void send(String commandString) {
+        writer.println(commandString);
+    }
 }

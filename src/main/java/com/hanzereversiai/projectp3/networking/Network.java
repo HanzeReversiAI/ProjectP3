@@ -29,4 +29,11 @@ public class Network {
 
         connection = new Connection(hostname, port, timeout);
     }
+
+    public void Subscribe(InputListener inputListener) {
+        connection.getInputHandler().Subscribe(inputListener);
+    }
+    public void SendCommand(Command command, String argument) {
+        Command.sendCommand(connection, command, argument);
+    }
 }
