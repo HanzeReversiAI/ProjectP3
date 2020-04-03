@@ -14,10 +14,6 @@ public class Connection {
     private PrintWriter writer;
 
     private InputHandler inputHandler;
-    private Thread inputHandlerThread;
-    public InputHandler getInputHandler() {
-        return inputHandler;
-    }
 
     public Connection(String hostname, int port, int timeout) throws IOException {
         socket = new Socket();
@@ -27,7 +23,7 @@ public class Connection {
         writer = new PrintWriter(socket.getOutputStream(), true);
 
         inputHandler = new InputHandler(reader);
-        inputHandlerThread = new Thread(inputHandler);
+        Thread inputHandlerThread = new Thread(inputHandler);
         inputHandlerThread.start();
 
         DebugOutputHandler debugOutputHandler = new DebugOutputHandler(writer);
@@ -37,5 +33,11 @@ public class Connection {
         System.out.println("DEBUG: Connection initialized");
     }
 
+    void send(String commandString) {
+        writer.println(commandString);
+    }
 
+    public InputHandler getInputHandler() {
+        return inputHandler;
+    }
 }
