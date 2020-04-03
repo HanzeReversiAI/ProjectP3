@@ -13,8 +13,20 @@ public class ConnectionPanelBehavior {
         this.connectionPanel = connectionPanel;
     }
 
+    public void onLocalConnectButtonActivated() {
+        connectionPanel.getConnectionPanelSkin().resetErrorLabel();
+
+        try {
+            Network network = new Network();
+            connectionPanel.fireEvent(new ConnectionRaisedEvent(this, connectionPanel, network));
+        }
+        catch (IOException e) {
+            connectionPanel.getConnectionPanelSkin().setErrorLabel("Something went wrong, please try again.");
+        }
+    }
+
     public void onConnectButtonActivated(String ip, String port) {
-        int portInteger = 0;
+        int portInteger;
 
         connectionPanel.getConnectionPanelSkin().resetErrorLabel();
 
