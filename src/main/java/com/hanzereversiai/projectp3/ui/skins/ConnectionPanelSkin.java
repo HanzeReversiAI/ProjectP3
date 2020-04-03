@@ -56,12 +56,6 @@ public class ConnectionPanelSkin extends SkinBase<ConnectionPanel> {
                 ipTextField.getText(), portTextField.getText()));
         GridPane.setHalignment(connectButton, HPos.CENTER);
         vBox.getChildren().add(connectButton);
-
-        // LocalConnect button
-        Button localConnectButton = new Button("Connect to local");
-        localConnectButton.setOnAction(e -> connectionPanelBehavior.onLocalConnectButtonActivated());
-        GridPane.setHalignment(localConnectButton, HPos.CENTER);
-        vBox.getChildren().add(localConnectButton);
     }
 
     public void setErrorLabel(String text) {
