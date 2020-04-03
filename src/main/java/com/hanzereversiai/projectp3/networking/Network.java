@@ -13,7 +13,6 @@ public class Network {
     public int timeout;
 
     private Connection connection;
-    private Thread thread;
 
     public Network() throws IOException {
         this(DEFAULT_HOSTNAME, DEFAULT_PORT, DEFAULT_TIMEOUT);
@@ -29,12 +28,5 @@ public class Network {
         this.timeout = timeout;
 
         connection = new Connection(hostname, port, timeout);
-        thread = new Thread(connection);
-        thread.start();
     }
-
-
-
-
-
 }
