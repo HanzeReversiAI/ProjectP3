@@ -14,7 +14,7 @@ public class ConnectionPanelBehavior {
     }
 
     public void onConnectButtonActivated(String ip, String port) {
-        int portInteger = 0;
+        int portInteger;
 
         connectionPanel.getConnectionPanelSkin().resetErrorLabel();
 
@@ -41,5 +41,9 @@ public class ConnectionPanelBehavior {
         catch (IOException e) {
             connectionPanel.getConnectionPanelSkin().setErrorLabel("Something went wrong, please try again.");
         }
+    }
+
+    public void onOfflineButtonActivated() {
+        connectionPanel.fireEvent(new ConnectionRaisedEvent(this, connectionPanel, null));
     }
 }
