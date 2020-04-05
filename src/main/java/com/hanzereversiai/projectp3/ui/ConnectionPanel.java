@@ -1,7 +1,5 @@
 package com.hanzereversiai.projectp3.ui;
 
-import com.hanzereversiai.projectp3.ui.behaviors.ConnectionPanelBehavior;
-import com.hanzereversiai.projectp3.ui.skins.ConnectionPanelSkin;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 

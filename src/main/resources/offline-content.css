@@ -1,0 +1,8 @@
+.lightly-shaded {
+    -fx-background-color: rgba(74, 74, 74, 0.5);
+}
+
+.light-text {
+    -fx-text-fill: white;
+    -fx-padding: 10px 10px 10px;
+}

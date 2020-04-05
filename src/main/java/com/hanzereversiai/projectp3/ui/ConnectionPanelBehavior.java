@@ -1,7 +1,6 @@
-package com.hanzereversiai.projectp3.ui.behaviors;
+package com.hanzereversiai.projectp3.ui;
 
 import com.hanzereversiai.projectp3.networking.Network;
-import com.hanzereversiai.projectp3.ui.ConnectionPanel;
 import com.hanzereversiai.projectp3.ui.events.ConnectionRaisedEvent;
 
 import java.io.IOException;
@@ -13,13 +12,13 @@ public class ConnectionPanelBehavior {
         this.connectionPanel = connectionPanel;
     }
 
-    public void onConnectButtonActivated(String ip, String port) {
+    public void onConnectButtonActivated(String ip, String port, String username) {
         int portInteger;
 
         connectionPanel.getConnectionPanelSkin().resetErrorLabel();
 
         // Do checks to make sure filled in fields are viable
-        if (ip.isEmpty() || port.isEmpty()) {
+        if (ip.isEmpty() || port.isEmpty() || username.isEmpty()) {
             connectionPanel.getConnectionPanelSkin().setErrorLabel("Please fill in all fields.");
             return;
         }
@@ -36,14 +35,19 @@ public class ConnectionPanelBehavior {
         // Try to create a connection object, if successful raise an event
         try {
             Network network = new Network(ip, portInteger);
-            connectionPanel.fireEvent(new ConnectionRaisedEvent(this, connectionPanel, network));
+            connectionPanel.fireEvent(new ConnectionRaisedEvent(this, connectionPanel, network, username));
         }
         catch (IOException e) {
             connectionPanel.getConnectionPanelSkin().setErrorLabel("Something went wrong, please try again.");
         }
     }
 
-    public void onOfflineButtonActivated() {
-        connectionPanel.fireEvent(new ConnectionRaisedEvent(this, connectionPanel, null));
+    public void onOfflineButtonActivated(String username) {
+        if (username.isEmpty()) {
+            connectionPanel.getConnectionPanelSkin().setErrorLabel("Please fill in a username.");
+            return;
+        }
+
+        connectionPanel.fireEvent(new ConnectionRaisedEvent(this, connectionPanel, null, username));
     }
 }

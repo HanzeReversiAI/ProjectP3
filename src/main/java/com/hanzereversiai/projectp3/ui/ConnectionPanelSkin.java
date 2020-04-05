@@ -1,7 +1,5 @@
-package com.hanzereversiai.projectp3.ui.skins;
+package com.hanzereversiai.projectp3.ui;
 
-import com.hanzereversiai.projectp3.ui.ConnectionPanel;
-import com.hanzereversiai.projectp3.ui.behaviors.ConnectionPanelBehavior;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,14 +19,13 @@ public class ConnectionPanelSkin extends SkinBase<ConnectionPanel> {
         // Layout
         BorderPane rootBorderPane = new BorderPane();
         rootBorderPane.getStyleClass().add("border-pane");
+        getChildren().add(rootBorderPane);
 
         VBox vBox = new VBox();
         vBox.setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
         vBox.setPadding(new Insets(25, 25, 25, 25));
         vBox.getStyleClass().add("vertical-box");
-
         rootBorderPane.setCenter(vBox);
-        getChildren().add(rootBorderPane);
 
         // Title label
         Label titleLabel = new Label("Online tournament framework");
@@ -45,11 +42,9 @@ public class ConnectionPanelSkin extends SkinBase<ConnectionPanel> {
         portTextField.setPromptText("Port number");
         vBox.getChildren().add(portTextField);
 
-        /*
         TextField usernameInputField = new TextField();
         usernameInputField.setPromptText("Username");
         vBox.getChildren().add(usernameInputField);
-         */
 
         // Error label
         errorLabel = new Label("ERROR TEXT");
@@ -68,14 +63,14 @@ public class ConnectionPanelSkin extends SkinBase<ConnectionPanel> {
         Button connectButton = new Button("Connect");
         connectButton.getStyleClass().add("connect-button");
         connectButton.setOnAction(e -> connectionPanelBehavior.onConnectButtonActivated(
-                ipTextField.getText(), portTextField.getText()));
+                ipTextField.getText(), portTextField.getText(), usernameInputField.getText()));
         GridPane.setHalignment(connectButton, HPos.CENTER);
         buttonsLayout.getChildren().add(connectButton);
 
         // Offline button
         Button offlineButton = new Button("Offline");
         offlineButton.getStyleClass().add("offline-button");
-        offlineButton.setOnAction(e -> connectionPanelBehavior.onOfflineButtonActivated());
+        offlineButton.setOnAction(e -> connectionPanelBehavior.onOfflineButtonActivated(usernameInputField.getText()));
         GridPane.setHalignment(offlineButton, HPos.CENTER);
         buttonsLayout.getChildren().add(offlineButton);
     }

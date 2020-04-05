@@ -1,5 +1,5 @@
 .border-pane {
-    -fx-background-color: radial-gradient(center 50% 50%, radius 50%, rgba(155, 180, 108, 1) 0%, rgba(85,138,89,1) 100%);
+    -fx-background-color: radial-gradient(center 50% 50%, radius 50%, rgb(155, 180, 108) 0%, rgb(85, 138, 89) 100%);
 }
 
 .vertical-box {
