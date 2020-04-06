@@ -1,8 +1,6 @@
 package com.hanzereversiai.projectp3.ui.events;
 
-import com.hanzereversiai.projectp3.networking.Network;
 import com.hanzereversiai.projectp3.ui.BoardGameOption;
-import com.hanzereversiai.projectp3.ui.ConnectionPanel;
 import javafx.event.Event;
 import javafx.event.EventTarget;
 import javafx.event.EventType;

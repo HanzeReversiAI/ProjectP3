@@ -1,8 +1,25 @@
-.lightly-shaded {
-    -fx-background-color: rgba(74, 74, 74, 0.5);
+#info-pane {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
 }
 
-.light-text {
+.label {
     -fx-text-fill: white;
-    -fx-padding: 10px 10px 10px;
+}
+
+.text-area {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
 }

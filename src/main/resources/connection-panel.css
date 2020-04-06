@@ -1,17 +1,14 @@
-.border-pane {
+.background {
     -fx-background-color: radial-gradient(center 50% 50%, radius 50%, rgb(155, 180, 108) 0%, rgb(85, 138, 89) 100%);
 }
 
-.vertical-box {
+.foreground {
     -fx-background-color: white;
     -fx-effect: dropshadow(three-pass-box, #20242D, 30, 0, 0, 0);
 }
 
-.title-label {
-    -fx-font-size: 20px;
+#title-label {
     -fx-padding: 0 0 10px 0;
-    -fx-border-insets: 0 0 10px 0;
-    -fx-background-insets: 0 0 10px 0;
 }
 
 .text-field {
@@ -30,9 +27,8 @@
     -fx-background-color: transparent;
 }
 
-.error-label {
-    -fx-text-fill: #930000;
-    -fx-padding: 0 0 10px 0;
+#button-container {
+    -fx-padding: 10px 0 0 0;
 }
 
 .button {
@@ -65,34 +61,34 @@
     -fx-effect: dropshadow(three-pass-box, rgba(44, 52, 75, 0.3), 10, 0, 0, 0);
 }
 
-.connect-button {
+#connect-button {
     -fx-background-color: #9bb46c;
 }
 
-.connect-button:focused {
+#connect-button:focused {
     -fx-background-color: #6cb46c;
 }
 
-.connect-button:hover {
+#connect-button:hover {
     -fx-background-color: #63a869;
 }
 
-.connect-button:pressed {
+#connect-button:pressed {
     -fx-background-color: #558a59;
 }
 
-.offline-button {
+#offline-button {
     -fx-background-color: #808080;
 }
 
-.offline-button:focused {
+#offline-button:focused {
     -fx-background-color: #949494;
 }
 
-.offline-button:hover {
+#offline-button:hover {
     -fx-background-color: #9c9c9c;
 }
 
-.offline-button:pressed {
+#offline-button:pressed {
     -fx-background-color: #a3a3a3;
 }

@@ -1,26 +1,14 @@
-.background {
+#background {
     -fx-background-color: linear-gradient(to bottom right, rgb(74, 74, 74), rgb(57, 57, 57));
 }
 
-.header {
+#header {
     -fx-background-color: linear-gradient(to bottom, rgb(155, 180, 108), rgb(127, 180, 108));
     -fx-effect: dropshadow(three-pass-box, #2b303b, 30, 0, 0, 0);
 }
 
-.header-inner {
-    -fx-padding: 10px 10px 10px 10px;
-}
-
-.title-label {
-    -fx-font-size: 20px;
-    -fx-padding: 0 0 10px 0;
-    -fx-font-weight: bold;
-    -fx-text-fill: rgb(57, 57, 57);
-}
-
-.welcome-label {
-    -fx-font-size: 15px;
-    -fx-text-fill: rgb(57, 57, 57);
+#navigation {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
 }
 
 .content {
