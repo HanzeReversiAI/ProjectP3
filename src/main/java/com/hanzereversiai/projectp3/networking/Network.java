@@ -3,7 +3,6 @@ package com.hanzereversiai.projectp3.networking;
 import java.io.IOException;
 
 public class Network {
-
     private static final String DEFAULT_HOSTNAME = "127.0.0.1";
     private static final int DEFAULT_PORT = 7789;
     private static final int DEFAULT_TIMEOUT = 30;
@@ -15,6 +14,7 @@ public class Network {
     private boolean isConnected;
 
     private Connection connection;
+    private DelegateInputListener delegateInputListener;
 
     public Network(String username, boolean shouldCreateConnection) throws IOException {
         this(DEFAULT_HOSTNAME, DEFAULT_PORT, username, shouldCreateConnection,
@@ -34,6 +34,8 @@ public class Network {
 
         if (shouldCreateConnection)
             createConnection();
+
+        delegateInputListener = new DelegateInputListener(this);
     }
 
     public void createConnection() throws IOException {
@@ -52,7 +54,12 @@ public class Network {
     public void Subscribe(InputListener inputListener) {
         connection.getInputHandler().subscribe(inputListener);
     }
+
     public void SendCommand(Command command, String argument) {
         Command.sendCommand(connection, command, argument);
+    }
+
+    public DelegateInputListener getDelegateInputListener() {
+        return delegateInputListener;
     }
 }
