@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="rootBorderPane" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.OnlineLobbyPlayerEntryController">
+   <left>
+      <Label fx:id="playerNameLabel" text="Player name" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets left="10.0" />
+         </BorderPane.margin>
+      </Label>
+   </left>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+   <right>
+      <MenuButton fx:id="challengeMenuButton" mnemonicParsing="false" text="Challenge" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets right="10.0" />
+         </BorderPane.margin>
+      </MenuButton>
+   </right>
+   <center>
+      <Button fx:id="challengeAcceptButton" mnemonicParsing="false" onAction="#onChallengeAcceptButtonActivated" text="Accept" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
