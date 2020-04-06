@@ -24,10 +24,8 @@ public class TTToeAdvancedAI extends AbstractTurnEntityRandomAI {
     // This function returns true if there are moves remaining on the board. It returns false if there are no moves left to play.
     static Boolean isMovesLeft(AbstractGameInstance gameInstance)
     {
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++)
-                if (gameInstance.getGameBoard().getTile(i,j).getGameBoardTileType() != GameBoardTileType.PLAYER_1 && gameInstance.getGameBoard().getTile(i,j).getGameBoardTileType() != GameBoardTileType.PLAYER_2){
-                    return true;
+        if(gameInstance.getGameBoard().getTilesByType(GameBoardTileType.HIDDEN).size() > 0){
+            return true;
                 }
         return false;
     }
