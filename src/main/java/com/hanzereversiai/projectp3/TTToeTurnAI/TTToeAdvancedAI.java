@@ -6,7 +6,6 @@ import com.thowv.javafxgridgameboard.GameBoardTile;
 import com.thowv.javafxgridgameboard.GameBoardTileType;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeAlgorithms;
-import java.util.ArrayList;
 
 public class TTToeAdvancedAI extends AbstractTurnEntity {
     public TTToeAdvancedAI() {
@@ -15,26 +14,16 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
 
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
-        ArrayList<GameBoardTile> possibleGameBoardTiles = gameInstance.getGameBoard().getTilesByType(
-                GameBoardTileType.HIDDEN);
-
-        gameInstance.getGameBoard().setTileTypes(possibleGameBoardTiles,
-                GameBoardTileType.VISIBLE);
         GameBoardTile best = findBestMove(gameInstance);
         System.out.println(best.getXCord());
         System.out.println(best.getYCord());
         gameInstance.doTurn(best.getXCord(),best.getYCord());
-
     }
-
 
     // This function returns true if there are moves remaining on the board. It returns false if there are no moves left to play.
     static Boolean isMovesLeft(AbstractGameInstance gameInstance)
     {
-        if(gameInstance.getGameBoard().getTilesByType(GameBoardTileType.HIDDEN).size() > 0){
-            return true;
-        }
-        return false;
+        return gameInstance.getGameBoard().getTilesByType(GameBoardTileType.HIDDEN).size() > 0;
     }
 
     // This is an evaluation function
@@ -59,7 +48,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
         if (score == -10)
             return score;
         // predicts no winner = a tie
-        if (isMovesLeft(gameInstance) == false)
+        if (!isMovesLeft(gameInstance))
             return 0;
 
         // If this maximizer's move
@@ -74,7 +63,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                         // Make the move
                         gameInstance.getGameBoard().setTileType(i,j,GameBoardTileType.PLAYER_1);
                         // Call minmax recursively and choose the maximum value
-                        best = Math.max(best, minMax(gameInstance,depth + 1, !isMax));
+                        best = Math.max(best, minMax(gameInstance,depth + 1, false));
                         // Undo the move
                         gameInstance.getGameBoard().setTileType(i,j,GameBoardTileType.HIDDEN);
                     }
@@ -96,7 +85,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                         gameInstance.getGameBoard().setTileType(i,j,GameBoardTileType.PLAYER_2);
 
                         // Call minmax recursively and choose the minimum value
-                        best = Math.min(best, minMax(gameInstance, depth + 1, !isMax));
+                        best = Math.min(best, minMax(gameInstance, depth + 1, true));
 
                         // Undo the move
                         gameInstance.getGameBoard().setTileType(i,j,GameBoardTileType.HIDDEN);                    }
@@ -137,8 +126,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                 }
             }
         }
-        GameBoardTile bestMove = gameInstance.getGameBoard().getTile(bestMoveX,bestMoveY);
-        return (bestMove);
+        return (gameInstance.getGameBoard().getTile(bestMoveX,bestMoveY));
     }
 }
 
