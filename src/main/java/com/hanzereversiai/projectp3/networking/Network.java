@@ -10,24 +10,43 @@ public class Network {
 
     public String hostname;
     public int port;
+    private String username;
     public int timeout;
+    private boolean isConnected;
 
     private Connection connection;
 
-    public Network() throws IOException {
-        this(DEFAULT_HOSTNAME, DEFAULT_PORT, DEFAULT_TIMEOUT);
+    public Network(String username, boolean shouldCreateConnection) throws IOException {
+        this(DEFAULT_HOSTNAME, DEFAULT_PORT, username, shouldCreateConnection,
+                DEFAULT_TIMEOUT);
     }
 
-    public Network(String hostname, int port) throws IOException {
-        this(hostname, port, DEFAULT_TIMEOUT);
+    public Network(String hostname, int port, String username) throws IOException {
+        this(hostname, port, username, true, DEFAULT_TIMEOUT);
     }
 
-    public Network(String hostname, int port, int timeout) throws IOException{
+    public Network(String hostname, int port, String username, boolean shouldCreateConnection, int timeout) throws IOException{
         this.hostname = hostname;
         this.port = port;
+        this.username = username;
         this.timeout = timeout;
+        isConnected = false;
 
+        if (shouldCreateConnection)
+            createConnection();
+    }
+
+    public void createConnection() throws IOException {
         connection = new Connection(hostname, port, timeout);
+        isConnected = true;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 
     public void Subscribe(InputListener inputListener) {

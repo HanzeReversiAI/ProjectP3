@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="background" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.ConnectionPanelController" stylesheets="@connection-panel.css">
+   <center>
+      <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" spacing="10.0" styleClass="foreground" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </padding>
+         <children>
+            <Label id="title-label" text="Tournament framework" textAlignment="CENTER">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="ipTextField" promptText="IP address or hostname" />
+            <TextField fx:id="portTextField" promptText="Port number" />
+            <TextField fx:id="usernameTextField" promptText="Username" />
+            <Label fx:id="errorLabel" textFill="#e10707" />
+            <HBox id="button-container" alignment="CENTER" spacing="10.0">
+               <children>
+                  <Button id="connect-button" mnemonicParsing="false" onAction="#onConnectButtonActivated" text="Connect" />
+                  <Button id="offline-button" mnemonicParsing="false" onAction="#onOfflineButtonActivated" text="Offline" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
