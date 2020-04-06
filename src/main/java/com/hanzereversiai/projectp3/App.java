@@ -15,10 +15,6 @@ public class App extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/connection-panel.fxml"));
         Parent root = loader.load();
 
-        ConnectionPanelController connectionPanelController = loader.getController();
-        ConnectionPanelModel connectionPanelModel = new ConnectionPanelModel();
-        connectionPanelController.setModel(connectionPanelModel);
-
         stage.setScene(new Scene(root));
         stage.setTitle("Tournament framework");
         stage.show();

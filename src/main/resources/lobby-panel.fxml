@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hanzereversiai.projectp3.ui.LobbyPanelController" stylesheets="@lobby-panel.css">
+<BorderPane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@lobby-panel.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.LobbyPanelController">
    <top>
       <VBox id="header" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
@@ -39,8 +38,8 @@
    <left>
       <VBox id="navigation" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Online" />
-            <Button mnemonicParsing="false" text="Offline" />
+            <Button fx:id="onlineButton" mnemonicParsing="false" onAction="#onOnlineButtonActivated" text="Online" />
+            <Button fx:id="offlineButton" mnemonicParsing="false" onAction="#onOfflineButtonActivated" text="Offline" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
