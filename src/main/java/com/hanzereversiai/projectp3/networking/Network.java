@@ -41,6 +41,8 @@ public class Network {
     public void createConnection() throws IOException {
         connection = new Connection(hostname, port, timeout);
         isConnected = true;
+
+        SendCommand(Command.LOGIN, username);
     }
 
     public String getUsername() {
@@ -57,6 +59,9 @@ public class Network {
 
     public void SendCommand(Command command, String argument) {
         Command.sendCommand(connection, command, argument);
+    }
+    public void SendCommand(Command command) {
+        Command.sendCommand(connection, command);
     }
 
     public DelegateInputListener getDelegateInputListener() {
