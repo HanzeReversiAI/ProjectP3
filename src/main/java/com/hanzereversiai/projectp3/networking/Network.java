@@ -32,10 +32,10 @@ public class Network {
         this.timeout = timeout;
         isConnected = false;
 
-        if (shouldCreateConnection)
+        if (shouldCreateConnection) {
             createConnection();
-
-        delegateInputListener = new DelegateInputListener(this);
+            delegateInputListener = new DelegateInputListener(this);
+        }
     }
 
     public void createConnection() throws IOException {
