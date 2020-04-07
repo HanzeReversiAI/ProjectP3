@@ -1,4 +1,4 @@
-package com.hanzereversiai.projectp3.reversiAi;
+package com.hanzereversiai.projectp3.reversiai;
 
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.GameBoardTile;

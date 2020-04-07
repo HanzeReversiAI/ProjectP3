@@ -1,14 +1,13 @@
 package com.hanzereversiai.projectp3;
 
 import com.hanzereversiai.projectp3.networking.Network;
-import com.hanzereversiai.projectp3.reversiAi.ReversiAi;
+import com.hanzereversiai.projectp3.reversiai.ReversiAi;
 import com.hanzereversiai.projectp3.ui.ConnectionPanel;
 import com.hanzereversiai.projectp3.ui.events.ConnectionRaisedEvent;
 import com.thowv.javafxgridgameboard.GameBoard;
 import com.thowv.javafxgridgameboard.events.GameBoardTilePressedEvent;
 import com.thowv.javafxgridgameboard.events.GameEndedEvent;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
-import com.thowv.javafxgridgameboard.premades.reversi.ReversiTurnEntityAI;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiTurnEntityPlayer;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
