@@ -5,10 +5,10 @@ import com.hanzereversiai.projectp3.networking.InputListener;
 import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 import com.thowv.javafxgridgameboard.GameBoard;
-import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeGameInstance;
+import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
 
-public class NetworkedTicTacToeGameInstance extends TTToeGameInstance implements InputListener {
-    public NetworkedTicTacToeGameInstance(GameBoard gameBoard, AbstractTurnEntity entityOne, AbstractTurnEntity entityTwo) {
+public class NetworkedReversiGameInstance extends ReversiGameInstance implements InputListener {
+    public NetworkedReversiGameInstance(GameBoard gameBoard, AbstractTurnEntity entityOne, AbstractTurnEntity entityTwo) {
         super(gameBoard, entityOne, entityTwo);
         NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_MOVE(this);
     }
