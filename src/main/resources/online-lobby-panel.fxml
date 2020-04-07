@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<SplitPane dividerPositions="0.5" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.OnlineLobbyController">
+   <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+      <Pane prefHeight="33.0" prefWidth="346.0">
+         <Label layoutX="150.0" layoutY="4.0" text="Players">
+            <font>
+               <Font size="15.0"/>
+            </font>
+         </Label>
+         <Button fx:id="refreshPlayerListButton" contentDisplay="BOTTOM" layoutX="4.0" layoutY="2.0"
+                 mnemonicParsing="false" onAction="#onRefreshPlayerListButton" text="Refresh"/>
+      </Pane>
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0"
+                  VBox.vgrow="ALWAYS">
+         <VBox fx:id="playerList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <BorderPane prefWidth="200.0">
+               <left>
+                  <Label text="Player name" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets left="10.0"/>
+                     </BorderPane.margin>
+                  </Label>
+               </left>
+               <VBox.margin>
+                  <Insets/>
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+               </padding>
+               <right>
+                  <MenuButton mnemonicParsing="false" text="Challenge" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets right="10.0"/>
+                     </BorderPane.margin>
+                  </MenuButton>
+               </right>
+               <center>
+                  <Button mnemonicParsing="false" text="ACCEPT" BorderPane.alignment="CENTER"/>
+               </center>
+            </BorderPane>
+         </VBox>
+      </ScrollPane>
+   </VBox>
+   <VBox id="info-pane" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefWidth="100.0">
+      <Label text="Subscriptions" VBox.vgrow="NEVER">
+         <VBox.margin>
+            <Insets bottom="5.0" top="5.0"/>
+         </VBox.margin>
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0"
+                  VBox.vgrow="ALWAYS">
+         <VBox fx:id="subscriptionList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <BorderPane prefWidth="200.0">
+               <left>
+                  <Label text="Board game name" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets left="10.0"/>
+                     </BorderPane.margin>
+                  </Label>
+               </left>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+               </padding>
+               <VBox.margin>
+                  <Insets/>
+               </VBox.margin>
+               <center>
+                  <Label text="Unsubscribed" BorderPane.alignment="CENTER"/>
+               </center>
+               <right>
+                  <Button mnemonicParsing="false" text="Subscribe" BorderPane.alignment="CENTER"/>
+               </right>
+            </BorderPane>
+         </VBox>
+      </ScrollPane>
+   </VBox>
+</SplitPane>

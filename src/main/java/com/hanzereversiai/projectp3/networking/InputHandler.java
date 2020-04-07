@@ -23,6 +23,7 @@ public class InputHandler implements Runnable {
         while(true) {
             try {
                 String input = reader.readLine();
+                System.out.println(input);
                 for (InputListener inputListener: inputListeners) {
                     inputListener.handleInput(input);
                 }
