@@ -1,10 +1,6 @@
 package com.hanzereversiai.projectp3.TTToeTurnAI;
 
-import com.thowv.javafxgridgameboard.AbstractGameInstance;
-import com.thowv.javafxgridgameboard.GameBoard;
-import com.thowv.javafxgridgameboard.GameBoardTile;
-import com.thowv.javafxgridgameboard.GameBoardTileType;
-import com.thowv.javafxgridgameboard.AbstractTurnEntity;
+import com.thowv.javafxgridgameboard.*;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeAlgorithms;
 
 public class TTToeAdvancedAI extends AbstractTurnEntity {
@@ -15,7 +11,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
         GameBoardTile best = findBestMove(gameInstance);
-        System.out.println(best.getXCord());
+        System.out.print(best.getXCord());
         System.out.println(best.getYCord());
         gameInstance.doTurn(best.getXCord(),best.getYCord());
     }
@@ -27,11 +23,11 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
     }
 
     // This is an evaluation function
-    static int evaluate(GameBoard gameBoard) {
-        if (TTToeAlgorithms.checkThreeInRow(gameBoard) == GameBoardTileType.PLAYER_1) {
+    static int evaluate(GameBoard gameBoard, GameBoardTileType gameBoardTileType) {
+        if (TTToeAlgorithms.checkThreeInRow(gameBoard) == gameBoardTileType) {
             return +10;
         }
-        else if (TTToeAlgorithms.checkThreeInRow(gameBoard) == GameBoardTileType.PLAYER_2) {
+        else if (TTToeAlgorithms.checkThreeInRow(gameBoard) == AlgorithmHelper.flipTileType(gameBoardTileType)) {
             return -10;
         }
         else return 0;
@@ -40,7 +36,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
     //minMax func
     static int minMax(AbstractGameInstance gameInstance, int depth, Boolean isMax)
     {
-        int score = evaluate(gameInstance.getGameBoard());
+        int score = evaluate(gameInstance.getGameBoard(), gameInstance.getCurrentTurnEntity().getGameBoardTileType());
         //predict max wins
         if (score == 10)
             return score;
@@ -61,7 +57,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                     // Check if cell is empty
                     if (gameInstance.getGameBoard().getTile(i,j).getGameBoardTileType() != GameBoardTileType.PLAYER_1 && gameInstance.getGameBoard().getTile(i,j).getGameBoardTileType() != GameBoardTileType.PLAYER_2){
                         // Make the move
-                        gameInstance.getGameBoard().setTileType(i,j,GameBoardTileType.PLAYER_1);
+                        gameInstance.getGameBoard().setTileType(i,j,gameInstance.getCurrentTurnEntity().getGameBoardTileType());
                         // Call minmax recursively and choose the maximum value
                         best = Math.max(best, minMax(gameInstance,depth + 1, false));
                         // Undo the move
@@ -82,7 +78,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                     if (gameInstance.getGameBoard().getTile(i,j).getGameBoardTileType() != GameBoardTileType.PLAYER_1 && gameInstance.getGameBoard().getTile(i,j).getGameBoardTileType() != GameBoardTileType.PLAYER_2){
 
                         // Make the move
-                        gameInstance.getGameBoard().setTileType(i,j,GameBoardTileType.PLAYER_2);
+                        gameInstance.getGameBoard().setTileType(i,j,AlgorithmHelper.flipTileType(gameInstance.getCurrentTurnEntity().getGameBoardTileType()));
 
                         // Call minmax recursively and choose the minimum value
                         best = Math.min(best, minMax(gameInstance, depth + 1, true));
@@ -109,7 +105,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                 if (gameInstance.getGameBoard().getTile(i,j).getGameBoardTileType() != GameBoardTileType.PLAYER_1 && gameInstance.getGameBoard().getTile(i,j).getGameBoardTileType() != GameBoardTileType.PLAYER_2){
 
                     // Make the move
-                    gameInstance.getGameBoard().setTileType(i,j,GameBoardTileType.PLAYER_1);
+                    gameInstance.getGameBoard().setTileType(i,j,gameInstance.getCurrentTurnEntity().getGameBoardTileType());
 
                     // compute evaluation function for this move.
                     int moveVal = minMax(gameInstance, 0, false);

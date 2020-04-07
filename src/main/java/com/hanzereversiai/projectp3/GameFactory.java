@@ -1,5 +1,6 @@
 package com.hanzereversiai.projectp3;
 
+import com.hanzereversiai.projectp3.TTToeTurnAI.TTToeAdvancedAI;
 import com.hanzereversiai.projectp3.ui.BoardGameOption;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
@@ -40,7 +41,7 @@ public class GameFactory {
                 if (playerOptions[i].equals("Player"))
                     turnEntities[i] = new TTToeTurnEntityPlayer();
                 else if(playerOptions[i].equals("AI"))
-                    turnEntities[i] = new TTToeTurnEntityAI();
+                    turnEntities[i] = new TTToeAdvancedAI();
             }
 
             gameInstance = new TTToeGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
