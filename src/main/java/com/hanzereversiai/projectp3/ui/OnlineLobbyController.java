@@ -1,7 +1,11 @@
 package com.hanzereversiai.projectp3.ui;
 
+import com.hanzereversiai.projectp3.GameFactory;
 import com.hanzereversiai.projectp3.networking.Command;
+import com.hanzereversiai.projectp3.networking.Network;
 import com.hanzereversiai.projectp3.networking.NetworkSingleton;
+import com.thowv.javafxgridgameboard.AbstractGameInstance;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,8 +13,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -19,8 +25,13 @@ import java.util.regex.Pattern;
 public class OnlineLobbyController {
 
     private final static Pattern listPattern = Pattern.compile("\"(.*?)\"[,\\]]");
+    private final static Pattern gameTypePattern = Pattern.compile("GAMETYPE: \"(.*?)\"");
+    private final static Pattern opponentPattern = Pattern.compile("OPPONENT: \"(.*?)\"");
+    private final static Pattern startingPlayerPattern = Pattern.compile("PLAYERTOMOVE: \"(.*?)\"");
+
     private ArrayList<String> challenges;
 
+    public SplitPane lobbyPanelRoot;
     public VBox playerList;
     public VBox subscriptionList;
     public Button refreshPlayerListButton;
@@ -30,17 +41,20 @@ public class OnlineLobbyController {
         challenges = new ArrayList<>();
         playerList.getChildren().remove(0);
         subscriptionList.getChildren().remove(0);
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_PLAYERLIST(this::handleInputPlayers);
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions);
-        NetworkSingleton.getNetworkInstance().SendCommand(Command.GET_GAMELIST);
-        NetworkSingleton.getNetworkInstance().SendCommand(Command.GET_PLAYERLIST);
+        Network network = NetworkSingleton.getNetworkInstance();
+        network.getDelegateInputListener().SUBSCRIBE_PLAYERLIST(this::handleInputPlayers);
+        network.getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions);
+        network.getDelegateInputListener().SUBSCRIBE_MATCH(this::handleMatch);
+        network.SendCommand(Command.GET_GAMELIST);
+        network.SendCommand(Command.GET_PLAYERLIST);
     }
 
     public void handleInputPlayers(String input) {
         // Avoiding a IllegalStateException by updating the UI outside of the JavaFX thread.
         Platform.runLater(
-                () -> playerList.getChildren().removeAll()
+                () -> playerList.getChildren().retainAll()
         );
+
         Matcher m = listPattern.matcher(input);
         String username = NetworkSingleton.getNetworkInstance().getUsername();
         while(m.find()) {
@@ -93,6 +107,57 @@ public class OnlineLobbyController {
                 challenges.add(m.group(1));
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public void handleMatch(String input) {
+        BoardGameOption boardGameOption;
+        String opponentName;
+
+        Matcher m = gameTypePattern.matcher(input);
+        if (m.find()) {
+            if (m.group(1).equals("Tic-tac-toe")) {
+                boardGameOption = new BoardGameOption("Tic-tac-toe", "tttoe");
+            } else if (m.group(1).equals("Reversi")) {
+                boardGameOption = new BoardGameOption("Reversi", "reversi");
+            } else {
+                throw new IllegalArgumentException("Unsupported Game: " + m.group(1));
+            }
+
+            m = opponentPattern.matcher(input);
+            if (m.find()) {
+                opponentName = m.group(1);
+
+                m = startingPlayerPattern.matcher(input);
+                if (m.find()) {
+                    String playerOne;
+                    String playerTwo;
+                    if (m.group(1).equals(NetworkSingleton.getNetworkInstance().getUsername())) {
+                        playerOne = "Player";
+                        playerTwo = "Network";
+                    } else {
+                        playerOne = "Network";
+                        playerTwo = "Player";
+                    }
+
+                    Platform.runLater(() -> {
+                        FXMLLoader gamePanelLoader = UIHelper.switchScene(lobbyPanelRoot.getScene(), "game-panel");
+
+                        AbstractGameInstance gameInstance = GameFactory.buildNetworkedGameInstance(
+                                boardGameOption, playerOne, playerTwo);
+
+                        // Set the game board in the panel
+                        GamePanelController gamePanelController = gamePanelLoader != null ? gamePanelLoader.getController() : null;
+                        if (gamePanelController != null)
+                            ((GamePanelController)gamePanelLoader.getController()).setGameBoard(gameInstance.getGameBoard());
+
+                        // Temporary fix to prevent null pointer
+                        PauseTransition pauseTransition = new PauseTransition(Duration.millis(100));
+                        pauseTransition.setOnFinished(e -> gameInstance.startGame());
+                        pauseTransition.play();
+                    });
+                }
             }
         }
     }

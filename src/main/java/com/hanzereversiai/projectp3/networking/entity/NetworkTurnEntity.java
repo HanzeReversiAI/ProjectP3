@@ -1,7 +1,7 @@
 package com.hanzereversiai.projectp3.networking.entity;
 
 import com.hanzereversiai.projectp3.networking.InputListener;
-import com.hanzereversiai.projectp3.networking.Network;
+import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 
@@ -15,9 +15,9 @@ public class NetworkTurnEntity extends AbstractTurnEntity implements InputListen
     private String username;
     private int move;
 
-    public NetworkTurnEntity(Network network) {
+    public NetworkTurnEntity() {
         super(EntityType.AI);
-        username = network.getUsername();
+        username = NetworkSingleton.getNetworkInstance().getUsername();
     }
 
     @Override
