@@ -19,6 +19,7 @@ public enum Command {
     }
 
     public static void sendCommand(Connection connection, Command command, String argument) {
+        System.out.println("DEBUG_SEND: " + command + " Arg: " + argument);
         switch (command) {
             case LOGIN:
                 connection.send("login " + argument);
@@ -45,7 +46,7 @@ public enum Command {
                 connection.send("challenge " + argument);
                 break;
             case ACCEPT_CHALLENGE:
-                connection.send("challenge accept");
+                connection.send("challenge accept " + argument);
                 break;
             case HELP:
                 connection.send("help");
