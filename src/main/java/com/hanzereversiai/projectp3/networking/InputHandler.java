@@ -39,7 +39,7 @@ public class InputHandler implements Runnable {
     private class DebugHandler implements InputListener {
         @Override
         public void handleInput(String input) {
-            System.out.println("RECEIVED: " + input);
+            System.out.println("NETWORK RECEIVED: " + input);
         }
     }
 }

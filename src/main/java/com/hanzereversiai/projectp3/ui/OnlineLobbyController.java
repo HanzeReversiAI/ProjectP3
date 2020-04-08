@@ -5,7 +5,6 @@ import com.hanzereversiai.projectp3.networking.Command;
 import com.hanzereversiai.projectp3.networking.Network;
 import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +15,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -152,10 +150,7 @@ public class OnlineLobbyController {
                         if (gamePanelController != null)
                             ((GamePanelController)gamePanelLoader.getController()).setGameBoard(gameInstance.getGameBoard());
 
-                        // Temporary fix to prevent null pointer
-                        PauseTransition pauseTransition = new PauseTransition(Duration.millis(100));
-                        pauseTransition.setOnFinished(e -> gameInstance.startGame());
-                        pauseTransition.play();
+                        gameInstance.start();
                     });
                 }
             }

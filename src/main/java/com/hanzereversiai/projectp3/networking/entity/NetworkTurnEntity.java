@@ -22,16 +22,11 @@ public class NetworkTurnEntity extends AbstractTurnEntity {
     public void handleInput(String input, AbstractGameInstance abstractGameInstance) {
         Matcher m = playerPattern.matcher(input);
         int move = -1;
-
-        System.out.println(input);
-
         if (m.find()) {
             String player = m.group(1);
             if (!player.equals(username)) {
                 m = movePattern.matcher(input);
                 if (m.find()) {
-                    System.out.println("G: " + m.group(1));
-
                     move = Integer.parseInt(m.group(1));
                 } else {
                     throw new IllegalArgumentException();

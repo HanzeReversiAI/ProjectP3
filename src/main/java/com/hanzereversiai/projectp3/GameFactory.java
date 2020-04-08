@@ -15,8 +15,6 @@ import com.thowv.javafxgridgameboard.premades.reversi.ReversiTurnEntityPlayer;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeGameInstance;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeTurnEntityPlayer;
 
-import java.util.Arrays;
-
 public class GameFactory {
     public static AbstractGameInstance buildGameInstance(BoardGameOption boardGameOption, String playerOneOption, String playerTwoOption) {
         return buildGameInstance(boardGameOption, new String[] { playerOneOption, playerTwoOption });
@@ -72,8 +70,6 @@ public class GameFactory {
                 else if(playerOptions[i].equals("Network"))
                     turnEntities[i] = new NetworkTurnEntity();
             }
-
-            System.out.println(Arrays.toString(turnEntities));
 
             gameInstance = new NetworkedReversiGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
         }
