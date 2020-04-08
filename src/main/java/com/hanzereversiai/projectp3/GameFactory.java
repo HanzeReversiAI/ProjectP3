@@ -1,9 +1,10 @@
 package com.hanzereversiai.projectp3;
 
+import com.hanzereversiai.projectp3.TTToeTurnAI.TTToeAdvancedAI;
 import com.hanzereversiai.projectp3.networking.entity.NetworkTurnEntity;
 import com.hanzereversiai.projectp3.networking.entity.NetworkedReversiGameInstance;
 import com.hanzereversiai.projectp3.networking.entity.NetworkedTicTacToeGameInstance;
-import com.hanzereversiai.projectp3.TTToeTurnAI.TTToeAdvancedAI;
+import com.hanzereversiai.projectp3.reversiai.ReversiAi;
 import com.hanzereversiai.projectp3.ui.BoardGameOption;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
@@ -12,8 +13,9 @@ import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiTurnEntityAI;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiTurnEntityPlayer;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeGameInstance;
-import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeTurnEntityAI;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeTurnEntityPlayer;
+
+import java.util.Arrays;
 
 public class GameFactory {
     public static AbstractGameInstance buildGameInstance(BoardGameOption boardGameOption, String playerOneOption, String playerTwoOption) {
@@ -66,10 +68,12 @@ public class GameFactory {
 
             for (int i = 0; i < playerOptions.length; i++) {
                 if (playerOptions[i].equals("Player"))
-                    turnEntities[i] = new ReversiTurnEntityPlayer();
+                    turnEntities[i] = new ReversiAi();
                 else if(playerOptions[i].equals("Network"))
                     turnEntities[i] = new NetworkTurnEntity();
             }
+
+            System.out.println(Arrays.toString(turnEntities));
 
             gameInstance = new NetworkedReversiGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
         }
