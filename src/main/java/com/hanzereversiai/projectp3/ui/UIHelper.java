@@ -17,6 +17,7 @@ public class UIHelper {
     public static FXMLLoader switchScene(Scene scene, String fxml) {
         try {
             FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("/" + fxml + ".fxml"));
+            System.out.println(loader);
             Parent lobbyPanelParent = loader.load();
             Scene lobbyPanelScene = new Scene(lobbyPanelParent);
 

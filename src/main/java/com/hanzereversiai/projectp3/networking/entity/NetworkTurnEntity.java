@@ -1,7 +1,8 @@
 package com.hanzereversiai.projectp3.networking.entity;
 
-import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import com.hanzereversiai.projectp3.networking.NetworkedGameInstance;
+import com.hanzereversiai.projectp3.networking.InputListener;
+import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 

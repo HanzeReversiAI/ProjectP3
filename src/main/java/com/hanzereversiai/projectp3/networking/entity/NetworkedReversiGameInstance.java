@@ -25,13 +25,12 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
 
     @Override
     public void doTurn(int x, int y) {
-        doTurnFromNetwork(x, y);
+        doTurnFromNetwork(x, y
 
         int width = getGameBoard().getSize();
         int move = (width * y) + x;
         NetworkSingleton.getNetworkInstance().SendCommand(Command.MOVE, String.valueOf(move));
     }
-
     public void doTurnFromNetwork(int x, int y) {
         super.doTurn(x, y);
     }
@@ -48,4 +47,3 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
 
         super.startGame(this);
     }
-}

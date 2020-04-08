@@ -1,5 +1,8 @@
 package com.hanzereversiai.projectp3;
 
+import com.hanzereversiai.projectp3.networking.entity.NetworkTurnEntity;
+import com.hanzereversiai.projectp3.networking.entity.NetworkedReversiGameInstance;
+import com.hanzereversiai.projectp3.networking.entity.NetworkedTicTacToeGameInstance;
 import com.hanzereversiai.projectp3.TTToeTurnAI.TTToeAdvancedAI;
 import com.hanzereversiai.projectp3.networking.entity.NetworkTurnEntity;
 import com.hanzereversiai.projectp3.networking.entity.NetworkedReversiGameInstance;
