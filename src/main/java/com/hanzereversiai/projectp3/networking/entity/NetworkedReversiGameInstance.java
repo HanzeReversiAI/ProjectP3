@@ -13,6 +13,8 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
     public NetworkedReversiGameInstance(GameBoard gameBoard, AbstractTurnEntity entityOne, AbstractTurnEntity entityTwo) {
         super(gameBoard, entityOne, entityTwo);
         NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_MOVE(this);
+        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_WIN(this::endGameWin);
+        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_LOSS(this::endGameLoss);
     }
 
     @Override
@@ -47,5 +49,12 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
         super.getGameBoard().setTileType(halfSize - 1, halfSize, GameBoardTileType.PLAYER_1);
 
         super.startGame(this);
+    }
+
+    public void endGameWin(String input) {
+        end(getCurrentTurnEntity(), getCurrentTurnEntity());
+    }
+    public void endGameLoss(String input) {
+        end(getCurrentTurnEntity(), getCurrentTurnEntity());
     }
 }
