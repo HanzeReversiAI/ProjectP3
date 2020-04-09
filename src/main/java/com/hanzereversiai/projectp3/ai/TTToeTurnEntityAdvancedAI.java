@@ -2,6 +2,8 @@ package com.hanzereversiai.projectp3.ai;
 
 import com.thowv.javafxgridgameboard.*;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeAlgorithms;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
     public TTToeTurnEntityAdvancedAI(String name) {
@@ -11,7 +13,11 @@ public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
         GameBoardTile best = findBestMove(gameInstance);
-        gameInstance.doTurn(best.getXCord(),best.getYCord());
+
+        // Prevent the AI from going too fast, instead, visualize the moves
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(100));
+        pauseTransition.setOnFinished((e) -> gameInstance.doTurn(best.getXCord(),best.getYCord()));
+        pauseTransition.play();
     }
 
     // This function returns true if there are moves remaining on the board. It returns false if there are no moves left to play.

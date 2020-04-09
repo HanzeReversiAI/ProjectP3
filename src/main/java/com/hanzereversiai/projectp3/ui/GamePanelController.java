@@ -5,6 +5,7 @@ import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 import com.thowv.javafxgridgameboard.GameBoard;
 import com.thowv.javafxgridgameboard.GameBoardTileType;
 import com.thowv.javafxgridgameboard.listeners.GameEndListener;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,10 +18,6 @@ public class GamePanelController {
 
     private AbstractGameInstance gameInstance;
     private GameBoard gameBoard;
-    private String playerOneName;
-    private String playerTwoName;
-    private int playerOnePoints;
-    private int playerTwoPoints;
 
     public BorderPane borderPane;
     public Button backButton;
@@ -34,27 +31,27 @@ public class GamePanelController {
     public void setGameInstance(AbstractGameInstance gameInstance) {
         this.gameInstance = gameInstance;
         this.gameBoard = gameInstance.getGameBoard();
+        centerStackPane.getChildren().clear();
         centerStackPane.getChildren().add(gameBoard);
 
         // Subscribe to events
         gameInstance.onTurnSwitch(this::onTurnSwitch);
+        gameInstance.onGameStart(this::onGameStart);
         gameInstance.onGameEnd(new GameEndListener() {
             @Override
             public void onGameEnd(AbstractTurnEntity winningTurnEntity, AbstractTurnEntity losingTurnEntity) {
-                backButton.setDisable(false);
+                enableBackButton();
+                centerStackPane.getChildren().clear();
+                centerStackPane.getChildren().add(new Label(winningTurnEntity.getName() + " won!"));
             }
 
             @Override
             public void onGameEnd(AbstractTurnEntity[] tieTurnEntities) {
-                backButton.setDisable(false);
+                enableBackButton();
+                centerStackPane.getChildren().clear();
+                centerStackPane.getChildren().add(new Label("It was a tie"));
             }
         });
-        gameInstance.onGameStart(this::onGameStart);
-    }
-
-    public void updatePoints(int playerOnePoints, int playerTwoPoints) {
-        setPlayerOnePoints(playerOnePoints);
-        setPlayerTwoPoints(playerTwoPoints);
     }
 
     public void onBackButtonActivated(ActionEvent actionEvent) {
@@ -62,12 +59,21 @@ public class GamePanelController {
     }
 
     private void onTurnSwitch(AbstractTurnEntity currentTurnEntity, AbstractTurnEntity lastTurnEntity) {
+        Platform.runLater(() -> {
+            setTurnLabelText(currentTurnEntity.getName());
+
+            setPlayerInfo(currentTurnEntity);
+            setPlayerInfo(lastTurnEntity);
+        });
+    }
+
+    private void onGameStart(AbstractTurnEntity currentTurnEntity) {
+        backButton.setDisable(true);
         setTurnLabelText(currentTurnEntity.getName());
     }
 
-    private void onGameStart() {
-        backButton.setDisable(true);
-        setTurnLabelText(gameInstance.getCurrentTurnEntity().getName());
+    private void enableBackButton() {
+        backButton.setDisable(false);
     }
 
     // region Getters and setters
@@ -75,31 +81,15 @@ public class GamePanelController {
         turnLabel.setText(TURN_LABEL_PREFIX + text);
     }
 
-    public void setPlayerOnePoints(int points) {
-        setPlayerOneInfo("", points);
-    }
-
-    public void setPlayerOneInfo(String name, int points) {
-        if (!name.isEmpty())
-            playerOneName = name;
-
-        if (points != -1)
-            playerOnePoints = points;
-
-        playerOneLabel.setText(playerOneName + ": " + playerOnePoints);
-    }
-
-    public void setPlayerTwoPoints(int points) {
-        setPlayerTwoInfo("", points);
-    }
-
-    public void setPlayerTwoInfo(String name, int points) {
-        if (!name.isEmpty())
-            playerTwoName = name;
-
-        playerTwoPoints = points;
-
-        playerTwoLabel.setText( playerTwoPoints + " :" + playerTwoName);
+    public void setPlayerInfo(AbstractTurnEntity turnEntity) {
+        if (turnEntity.getGameBoardTileType() == GameBoardTileType.PLAYER_1) {
+            playerOneLabel.setText(turnEntity.getName() + ": " + turnEntity.getPoints());
+            playerOneColorPane.setStyle("-fx-background-color: " + turnEntity.getColor());
+        }
+        else {
+            playerTwoLabel.setText(turnEntity.getPoints() + " :" + turnEntity.getName());
+            playerTwoColorPane.setStyle("-fx-background-color: " + turnEntity.getColor());
+        }
     }
     // endregion
 }

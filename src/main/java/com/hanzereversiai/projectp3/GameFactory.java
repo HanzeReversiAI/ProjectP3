@@ -35,7 +35,7 @@ public class GameFactory {
                 if (playerOptions[i].equals("Player"))
                     turnEntities[i] = new ReversiTurnEntityPlayer("Player " + (i + 1));
                 else if(playerOptions[i].equals("AI"))
-                    turnEntities[i] = new ReversiTurnEntityAI("Player" + (i + 1));
+                    turnEntities[i] = new ReversiTurnEntityAdvancedAI("Player" + (i + 1));
             }
 
             gameInstance = new ReversiGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
