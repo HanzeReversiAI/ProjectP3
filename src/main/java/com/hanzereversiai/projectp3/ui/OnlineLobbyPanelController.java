@@ -15,13 +15,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OnlineLobbyController {
+public class OnlineLobbyPanelController {
 
     private final static Pattern listPattern = Pattern.compile("\"(.*?)\"[,\\]]");
     private final static Pattern gameTypePattern = Pattern.compile("GAMETYPE: \"(.*?)\"");
@@ -151,14 +150,14 @@ public class OnlineLobbyController {
                         if (gamePanelController != null)
                             ((GamePanelController)gamePanelLoader.getController()).setGameBoard(gameInstance.getGameBoard());
 
-                        gameInstance.start();
+                        Platform.runLater(gameInstance::start);
                     });
                 }
             }
         }
     }
 
-    public void onRefreshPlayerListButton(ActionEvent actionEvent) {
+    public void onRefreshPlayerListButtonActivated(ActionEvent actionEvent) {
         NetworkSingleton.getNetworkInstance().SendCommand(Command.GET_PLAYERLIST);
     }
 }

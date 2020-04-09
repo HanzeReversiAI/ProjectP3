@@ -1,4 +1,4 @@
-package com.hanzereversiai.projectp3.reversiai;
+package com.hanzereversiai.projectp3.ai;
 
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.GameBoardTile;
@@ -10,7 +10,7 @@ import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ReversiAi extends AbstractTurnEntityRandomAI {
+public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
