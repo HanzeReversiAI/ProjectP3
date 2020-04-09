@@ -74,7 +74,5 @@ public class OfflineLobbyPanelController {
         GamePanelController gamePanelController = gamePanelLoader != null ? gamePanelLoader.getController() : null;
         if (gamePanelController != null)
             ((GamePanelController)gamePanelLoader.getController()).setGameInstance(gameInstance);
-
-        Platform.runLater(gameInstance::start);
     }
 }

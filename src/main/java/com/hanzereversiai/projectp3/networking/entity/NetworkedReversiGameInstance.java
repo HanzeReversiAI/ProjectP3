@@ -20,7 +20,7 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
     @Override
     public void handleInput(String input) {
         if (getCurrentTurnEntity() instanceof  NetworkTurnEntity) {
-           NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getCurrentTurnEntity();
+           NetworkTurnEntity networkTurnEntity = (NetworkTurnEntity) getCurrentTurnEntity();
            networkTurnEntity.handleInput(input, this);
         }
     }
@@ -52,9 +52,10 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
     }
 
     public void endGameWin(String input) {
-        end(getCurrentTurnEntity(), getCurrentTurnEntity());
+        super.end(getCurrentTurnEntity(), getCurrentTurnEntity());
     }
+
     public void endGameLoss(String input) {
-        end(getCurrentTurnEntity(), getCurrentTurnEntity());
+        super.end(getCurrentTurnEntity(), getCurrentTurnEntity());
     }
 }

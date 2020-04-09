@@ -15,8 +15,6 @@ import javafx.scene.layout.StackPane;
 
 public class GamePanelController {
     private static final String TURN_LABEL_PREFIX = "Turn: ";
-
-    private AbstractGameInstance gameInstance;
     private GameBoard gameBoard;
 
     public BorderPane borderPane;
@@ -29,7 +27,6 @@ public class GamePanelController {
     public Pane playerTwoColorPane;
 
     public void setGameInstance(AbstractGameInstance gameInstance) {
-        this.gameInstance = gameInstance;
         this.gameBoard = gameInstance.getGameBoard();
         centerStackPane.getChildren().clear();
         centerStackPane.getChildren().add(gameBoard);
@@ -40,18 +37,21 @@ public class GamePanelController {
         gameInstance.onGameEnd(new GameEndListener() {
             @Override
             public void onGameEnd(AbstractTurnEntity winningTurnEntity, AbstractTurnEntity losingTurnEntity) {
-                enableBackButton();
-                centerStackPane.getChildren().clear();
-                centerStackPane.getChildren().add(new Label(winningTurnEntity.getName() + " won!"));
+                //enableBackButton();
+                //centerStackPane.getChildren().clear();
+                //centerStackPane.getChildren().add(new Label(winningTurnEntity.getName() + " won!"));
             }
 
             @Override
             public void onGameEnd(AbstractTurnEntity[] tieTurnEntities) {
-                enableBackButton();
-                centerStackPane.getChildren().clear();
-                centerStackPane.getChildren().add(new Label("It was a tie"));
+                //enableBackButton();
+                //centerStackPane.getChildren().clear();
+                //centerStackPane.getChildren().add(new Label("It was a tie"));
             }
         });
+
+        // Start the game instance
+        Platform.runLater(gameInstance::start);
     }
 
     public void onBackButtonActivated(ActionEvent actionEvent) {
@@ -68,8 +68,12 @@ public class GamePanelController {
     }
 
     private void onGameStart(AbstractTurnEntity currentTurnEntity) {
-        backButton.setDisable(true);
+        //backButton.setDisable(true);
         setTurnLabelText(currentTurnEntity.getName());
+    }
+
+    private void endGame(String endMessage) {
+
     }
 
     private void enableBackButton() {

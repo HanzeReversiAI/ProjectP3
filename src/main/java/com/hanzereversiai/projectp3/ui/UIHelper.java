@@ -25,6 +25,8 @@ public class UIHelper {
 
             Stage stage = (Stage) scene.getWindow();
 
+            System.out.println(stage);
+            System.out.println(lobbyPanelParent);
             stage.setScene(lobbyPanelScene);
             stage.show();
 

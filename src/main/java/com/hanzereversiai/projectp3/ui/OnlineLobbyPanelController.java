@@ -37,37 +37,40 @@ public class OnlineLobbyPanelController {
     @FXML
     public void initialize() {
         challenges = new ArrayList<>();
-        playerList.getChildren().remove(0);
-        subscriptionList.getChildren().remove(0);
+        playerList.getChildren().clear();
+        subscriptionList.getChildren().clear();
+
         Network network = NetworkSingleton.getNetworkInstance();
         network.getDelegateInputListener().SUBSCRIBE_PLAYERLIST(this::handleInputPlayers);
         network.getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions);
         network.getDelegateInputListener().SUBSCRIBE_MATCH(this::handleMatch);
+
         network.SendCommand(Command.GET_GAMELIST);
         network.SendCommand(Command.GET_PLAYERLIST);
     }
 
     public void handleInputPlayers(String input) {
-        // Avoiding a IllegalStateException by updating the UI outside of the JavaFX thread.
+        // Avoiding a IllegalStateException by telling the program to update the UI in the JavaFX thread
         Platform.runLater(
-                () -> playerList.getChildren().retainAll()
+                () -> playerList.getChildren().clear()
         );
 
-        Matcher m = listPattern.matcher(input);
+        Matcher matcher = listPattern.matcher(input);
         String username = NetworkSingleton.getNetworkInstance().getUsername();
-        while(m.find()) {
+
+        while(matcher.find()) {
             try {
-                if (! m.group(1).equals(username)) {
+                if (! matcher.group(1).equals(username)) {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + "online-lobby-player-entry" + ".fxml"));
                     Parent player = loader.load();
                     OnlineLobbyPlayerEntryController controller = loader.getController();
                     BorderPane borderPane = (BorderPane) player;
 
-                    String opponent = m.group(1);
+                    String opponent = matcher.group(1);
 
                     for (String item : challenges) {
                         MenuItem menuItem = new MenuItem(item);
-                        menuItem.setOnAction(a-> controller.onChallengeAcceptMenuButtonActivated(a, item, opponent));
+                        menuItem.setOnAction(e -> controller.onChallengeAcceptMenuButtonActivated(e, item, opponent));
                         controller.addChallengeOptions(menuItem);
                     }
 
@@ -84,13 +87,15 @@ public class OnlineLobbyPanelController {
     }
 
     public void handleInputSubscriptions(String input) {
-        // Avoiding a IllegalStateException by updating the UI outside of the JavaFX thread.
+        /// Avoiding a IllegalStateException by telling the program to update the UI in the JavaFX thread
         Platform.runLater(
-                () -> subscriptionList.getChildren().retainAll()
+                () -> subscriptionList.getChildren().clear()
         );
+
         challenges = new ArrayList<>();
-        Matcher m = listPattern.matcher(input);
-        while(m.find()) {
+        Matcher matcher = listPattern.matcher(input);
+
+        while(matcher.find()) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + "online-lobby-subscription-entry" + ".fxml"));
                 Parent subscription = loader.load();
@@ -101,8 +106,8 @@ public class OnlineLobbyPanelController {
                         () -> subscriptionList.getChildren().add(borderPane)
                 );
 
-                controller.setGameName(m.group(1));
-                challenges.add(m.group(1));
+                controller.setGameName(matcher.group(1));
+                challenges.add(matcher.group(1));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -113,48 +118,55 @@ public class OnlineLobbyPanelController {
         BoardGameOption boardGameOption;
         String opponentName;
 
-        Matcher m = gameTypePattern.matcher(input);
-        if (m.find()) {
-            if (m.group(1).equals("Tic-tac-toe")) {
-                boardGameOption = new BoardGameOption("Tic-tac-toe", "tttoe");
-            } else if (m.group(1).equals("Reversi")) {
-                boardGameOption = new BoardGameOption("Reversi", "reversi");
-            } else {
-                throw new IllegalArgumentException("Unsupported Game: " + m.group(1));
-            }
+        // Game type matching
+        Matcher matcher = gameTypePattern.matcher(input);
 
-            m = opponentPattern.matcher(input);
-            if (m.find()) {
-                opponentName = m.group(1);
+        if (!matcher.find())
+            return;
 
-                m = startingPlayerPattern.matcher(input);
-                if (m.find()) {
-                    String playerOne;
-                    String playerTwo;
-                    if (m.group(1).equals(NetworkSingleton.getNetworkInstance().getUsername())) {
-                        playerOne = "Player";
-                        playerTwo = "Network";
-                    } else {
-                        playerOne = "Network";
-                        playerTwo = "Player";
-                    }
+        if (matcher.group(1).equals("Tic-tac-toe"))
+            boardGameOption = new BoardGameOption("Tic-tac-toe", "tttoe");
+        else if (matcher.group(1).equals("Reversi"))
+            boardGameOption = new BoardGameOption("Reversi", "reversi");
+        else
+            throw new IllegalArgumentException("Unsupported Game: " + matcher.group(1));
 
-                    Platform.runLater(() -> {
-                        FXMLLoader gamePanelLoader = UIHelper.switchScene(lobbyPanelRoot.getScene(), "game-panel");
+        // Opponent matching
+        matcher = opponentPattern.matcher(input);
 
-                        AbstractGameInstance gameInstance = GameFactory.buildNetworkedGameInstance(
-                                boardGameOption, playerOne, playerTwo);
+        if (!matcher.find())
+            return;
 
-                        // Set the game board in the panel
-                        GamePanelController gamePanelController = gamePanelLoader != null ? gamePanelLoader.getController() : null;
-                        if (gamePanelController != null)
-                            ((GamePanelController)gamePanelLoader.getController()).setGameInstance(gameInstance);
+        opponentName = matcher.group(1);
 
-                        Platform.runLater(gameInstance::start);
-                    });
-                }
-            }
+        // Stating player matching
+        matcher = startingPlayerPattern.matcher(input);
+
+        if (!matcher.find())
+            return;
+
+        String playerOne, playerTwo;
+
+        if (matcher.group(1).equals(NetworkSingleton.getNetworkInstance().getUsername())) {
+            playerOne = "Player";
+            playerTwo = "Network-" + opponentName;
         }
+        else {
+            playerOne = "Network-" + opponentName;
+            playerTwo = "Player";
+        }
+
+        Platform.runLater(() -> {
+            FXMLLoader gamePanelLoader = UIHelper.switchScene(lobbyPanelRoot.getScene(), "game-panel");
+
+            AbstractGameInstance gameInstance = GameFactory.buildNetworkedGameInstance(
+                    boardGameOption, playerOne, playerTwo);
+
+            // Set the game board in the panel
+            GamePanelController gamePanelController = gamePanelLoader != null ? gamePanelLoader.getController() : null;
+            if (gamePanelController != null)
+                ((GamePanelController)gamePanelLoader.getController()).setGameInstance(gameInstance);
+        });
     }
 
     public void onRefreshPlayerListButtonActivated(ActionEvent actionEvent) {

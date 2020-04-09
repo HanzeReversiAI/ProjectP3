@@ -25,7 +25,7 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
     private void takeTurn(ReversiGameInstance gameInstance) {
         ArrayList<GameBoardTile> possibleGameBoardTiles = ReversiAlgorithms.determineTilePossibilities(
                 gameInstance.getGameBoard(), getGameBoardTileType());
-        PauseTransition pauseTransition = new PauseTransition(Duration.millis(1000));
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
 
         if (possibleGameBoardTiles.size() != 0) {
             gameInstance.getGameBoard().setTileTypes(possibleGameBoardTiles,

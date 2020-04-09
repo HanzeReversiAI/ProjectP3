@@ -41,9 +41,9 @@ public class DelegateInputListener implements InputListener {
             gameMatch_inputListener.handleInput(input);
         } else if (input.startsWith("SVR GAME YOURTURN")) {
             gameYourTurn_inputListener.handleInput(input);
-        } else if (input.startsWith("SVR GAME YOURTURN")) {
+        } else if (input.startsWith("SVR GAME WIN")) {
             gameWIN_inputListener.handleInput(input);
-        } else if (input.startsWith("SVR GAME YOURTURN")) {
+        } else if (input.startsWith("SVR GAME LOSS")) {
             gameLOSS_inputListener.handleInput(input);
         }
     }
