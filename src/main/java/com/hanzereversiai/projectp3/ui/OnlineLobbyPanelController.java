@@ -77,7 +77,8 @@ public class OnlineLobbyPanelController {
 
                     controller.setPlayerName(opponent);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
