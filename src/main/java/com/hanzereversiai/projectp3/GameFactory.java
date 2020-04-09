@@ -10,7 +10,6 @@ import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 import com.thowv.javafxgridgameboard.GameBoard;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
-import com.thowv.javafxgridgameboard.premades.reversi.ReversiTurnEntityAI;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiTurnEntityPlayer;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeGameInstance;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeTurnEntityPlayer;
@@ -33,9 +32,9 @@ public class GameFactory {
 
             for (int i = 0; i < playerOptions.length; i++) {
                 if (playerOptions[i].equals("Player"))
-                    turnEntities[i] = new ReversiTurnEntityPlayer();
+                    turnEntities[i] = new ReversiTurnEntityPlayer("Player " + (i + 1));
                 else if(playerOptions[i].equals("AI"))
-                    turnEntities[i] = new ReversiTurnEntityAI();
+                    turnEntities[i] = new ReversiTurnEntityAdvancedAI("Player" + (i + 1));
             }
 
             gameInstance = new ReversiGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
@@ -45,9 +44,9 @@ public class GameFactory {
 
             for (int i = 0; i < playerOptions.length; i++) {
                 if (playerOptions[i].equals("Player"))
-                    turnEntities[i] = new TTToeTurnEntityPlayer();
+                    turnEntities[i] = new TTToeTurnEntityPlayer("Player " + (i + 1));
                 else if(playerOptions[i].equals("AI"))
-                    turnEntities[i] = new TTToeTurnEntityAdvancedAI();
+                    turnEntities[i] = new TTToeTurnEntityAdvancedAI("Player " + (i + 1));
             }
 
             gameInstance = new TTToeGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
@@ -66,9 +65,12 @@ public class GameFactory {
 
             for (int i = 0; i < playerOptions.length; i++) {
                 if (playerOptions[i].equals("Player"))
-                    turnEntities[i] = new ReversiTurnEntityAdvancedAI();
-                else if(playerOptions[i].equals("Network"))
-                    turnEntities[i] = new NetworkTurnEntity();
+                    turnEntities[i] = new ReversiTurnEntityAdvancedAI("You");
+                else if(playerOptions[i].contains("Network")) {
+                    String[] info = playerOptions[i].split("-");
+                    turnEntities[i] = new NetworkTurnEntity(info[1]);
+                }
+
             }
 
             gameInstance = new NetworkedReversiGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
@@ -78,9 +80,9 @@ public class GameFactory {
 
             for (int i = 0; i < playerOptions.length; i++) {
                 if (playerOptions[i].equals("Player"))
-                    turnEntities[i] = new TTToeTurnEntityPlayer();
+                    turnEntities[i] = new TTToeTurnEntityPlayer("You");
                 else if(playerOptions[i].equals("Network"))
-                    turnEntities[i] = new NetworkTurnEntity();
+                    turnEntities[i] = new NetworkTurnEntity("Network player");
             }
 
             gameInstance = new NetworkedTicTacToeGameInstance(gameBoard, turnEntities[0], turnEntities[1]);

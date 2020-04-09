@@ -6,11 +6,16 @@ import com.thowv.javafxgridgameboard.GameBoardTileType;
 import com.thowv.javafxgridgameboard.premades.AbstractTurnEntityRandomAI;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiAlgorithms;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
+    public ReversiTurnEntityAdvancedAI(String name) {
+        super(name);
+    }
 
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
@@ -20,6 +25,7 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
     private void takeTurn(ReversiGameInstance gameInstance) {
         ArrayList<GameBoardTile> possibleGameBoardTiles = ReversiAlgorithms.determineTilePossibilities(
                 gameInstance.getGameBoard(), getGameBoardTileType());
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
 
         if (possibleGameBoardTiles.size() != 0) {
             gameInstance.getGameBoard().setTileTypes(possibleGameBoardTiles,
@@ -27,12 +33,14 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 
             GameBoardTile bestMove = this.getBestMove(possibleGameBoardTiles, gameInstance);
 
-            gameInstance.doTurn(bestMove.getXCord(), bestMove.getYCord());
+            pauseTransition.setOnFinished(e -> gameInstance.doTurn(bestMove.getXCord(), bestMove.getYCord()));
         }
         else{
-            gameInstance.passTurn();
+            pauseTransition.setOnFinished(e -> gameInstance.passTurn());
             System.out.println("Passed turn");
         }
+
+        pauseTransition.play();
     }
 
     public GameBoardTile getBestMove(ArrayList<GameBoardTile> availableTilesMoves, ReversiGameInstance gameInstance)

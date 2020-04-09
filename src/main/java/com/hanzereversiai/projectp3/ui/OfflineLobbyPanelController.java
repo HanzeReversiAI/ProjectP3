@@ -73,8 +73,6 @@ public class OfflineLobbyPanelController {
         // Set the game board in the panel
         GamePanelController gamePanelController = gamePanelLoader != null ? gamePanelLoader.getController() : null;
         if (gamePanelController != null)
-            ((GamePanelController)gamePanelLoader.getController()).setGameBoard(gameInstance.getGameBoard());
-
-        Platform.runLater(gameInstance::start);
+            ((GamePanelController)gamePanelLoader.getController()).setGameInstance(gameInstance);
     }
 }

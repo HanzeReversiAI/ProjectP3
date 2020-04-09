@@ -1,10 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.GamePanelController" />
+<BorderPane id="background" fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@game-panel.css, @general.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.GamePanelController">
+   <top>
+      <BorderPane minHeight="-Infinity" minWidth="-Infinity" styleClass="shaded-background" BorderPane.alignment="CENTER">
+         <left>
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#onBackButtonActivated" text="Back" BorderPane.alignment="CENTER" />
+         </left>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <center>
+            <HBox alignment="CENTER" fillHeight="false" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Pane fx:id="playerOneColorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="15.0" prefWidth="15.0" HBox.hgrow="NEVER" />
+                  <Label fx:id="playerOneLabel" text="Player 1: Points" textFill="WHITE" />
+                  <Pane minHeight="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
+                  <Label fx:id="playerTwoLabel" text="Points: Player 2" textFill="WHITE" />
+                  <Pane fx:id="playerTwoColorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="15.0" prefWidth="15.0" />
+               </children>
+            </HBox>
+         </center>
+         <BorderPane.margin>
+            <Insets bottom="10.0" />
+         </BorderPane.margin>
+      </BorderPane>
+   </top>
+   <bottom>
+      <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" styleClass="shaded-background" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="turnLabel" text="Turn: Player X - Seconds" textFill="WHITE" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <BorderPane.margin>
+            <Insets top="10.0" />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
+   <center>
+      <StackPane fx:id="centerStackPane" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

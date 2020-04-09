@@ -12,46 +12,40 @@ public class NetworkTurnEntity extends AbstractTurnEntity {
 
     private final static Pattern playerPattern = Pattern.compile("PLAYER: \"(.*?)\",");
     private final static Pattern movePattern = Pattern.compile("MOVE: \"(.*?)\",");
-    private String username;
 
-    public NetworkTurnEntity() {
-        super(EntityType.AI);
-        username = NetworkSingleton.getNetworkInstance().getUsername();
+    public NetworkTurnEntity(String name) {
+        super(EntityType.AI, name);
     }
 
     public void handleInput(String input, AbstractGameInstance abstractGameInstance) {
-        Matcher m = playerPattern.matcher(input);
-        int move = -1;
-        if (m.find()) {
-            String player = m.group(1);
-            if (!player.equals(username)) {
-                m = movePattern.matcher(input);
-                if (m.find()) {
-                    move = Integer.parseInt(m.group(1));
-                } else {
-                    throw new IllegalArgumentException();
-                }
+        Matcher matcher = playerPattern.matcher(input);
+        int move;
 
-                int width = abstractGameInstance.getGameBoard().getSize();
-
-                int x = move % width;
-                int y = move / width;
-
-                if (abstractGameInstance instanceof NetworkedGameInstance) {
-                    ((NetworkedGameInstance) abstractGameInstance).doTurnFromNetwork(x, y);
-                } else {
-                    throw new IllegalStateException();
-                }
-            }
-        } else {
+        if (!matcher.find())
             throw new IllegalArgumentException();
-        }
 
+        // Check if the move is meant for this player by looking at the username
+        String player = matcher.group(1);
 
+        if (player.equals(NetworkSingleton.getNetworkInstance().getUsername()))
+            return;
+
+        matcher = movePattern.matcher(input);
+        if (!matcher.find())
+            throw new IllegalArgumentException();
+
+        move = Integer.parseInt(matcher.group(1));
+
+        int width = abstractGameInstance.getGameBoard().getSize();
+        int x = move % width;
+        int y = move / width;
+
+        if (abstractGameInstance instanceof NetworkedGameInstance)
+            ((NetworkedGameInstance) abstractGameInstance).doTurnFromNetwork(x, y);
+        else
+            throw new IllegalStateException();
     }
 
     @Override
-    public void takeTurn(AbstractGameInstance abstractGameInstance) {
-
-    }
+    public void takeTurn(AbstractGameInstance abstractGameInstance) { }
 }
