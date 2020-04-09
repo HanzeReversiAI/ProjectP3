@@ -42,7 +42,15 @@ public class Network {
         connection = new Connection(hostname, port, timeout);
         isConnected = true;
 
-        SendCommand(Command.LOGIN, username);
+        sendCommand(Command.LOGIN, username);
+    }
+
+    public void stopConnection() throws IOException {
+        if (isConnected) {
+            sendCommand(Command.LOGOUT);
+            connection.close();
+            isConnected = false;
+        }
     }
 
     public String getUsername() {
@@ -53,14 +61,15 @@ public class Network {
         return isConnected;
     }
 
-    public void Subscribe(InputListener inputListener) {
+    public void subscribe(InputListener inputListener) {
         connection.getInputHandler().subscribe(inputListener);
     }
 
-    public void SendCommand(Command command, String argument) {
+    public void sendCommand(Command command, String argument) {
         Command.sendCommand(connection, command, argument);
     }
-    public void SendCommand(Command command) {
+
+    public void sendCommand(Command command) {
         Command.sendCommand(connection, command);
     }
 

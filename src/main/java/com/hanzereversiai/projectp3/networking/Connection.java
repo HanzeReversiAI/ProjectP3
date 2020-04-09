@@ -14,6 +14,8 @@ public class Connection {
     private PrintWriter writer;
 
     private InputHandler inputHandler;
+    private Thread inputHandlerThread;
+    private Thread debugOutputHandlerThread;
 
     public Connection(String hostname, int port, int timeout) throws IOException {
         socket = new Socket();
@@ -23,14 +25,25 @@ public class Connection {
         writer = new PrintWriter(socket.getOutputStream(), true);
 
         inputHandler = new InputHandler(reader);
-        Thread inputHandlerThread = new Thread(inputHandler);
+        inputHandlerThread = new Thread(inputHandler);
         inputHandlerThread.start();
 
         DebugOutputHandler debugOutputHandler = new DebugOutputHandler(writer);
-        Thread debugOutputHandlerThread = new Thread(debugOutputHandler);
+        debugOutputHandlerThread = new Thread(debugOutputHandler);
         debugOutputHandlerThread.start();
 
         System.out.println("NETWORK: Connection initialized");
+    }
+
+    public void close() throws IOException {
+        inputHandlerThread.interrupt();
+        debugOutputHandlerThread.interrupt();
+
+        reader.close();
+        writer.close();
+        socket.close();
+
+        System.out.println("NETWORK: Connection closed");
     }
 
     void send(String commandString) {

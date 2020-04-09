@@ -20,15 +20,17 @@ public class InputHandler implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
-            try {
-                String input = reader.readLine();
+        String input;
+
+        try {
+            while(!Thread.interrupted() && (input = reader.readLine()) != null) {
                 for (InputListener inputListener: inputListeners) {
                     inputListener.handleInput(input);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -45,15 +45,12 @@ public class OnlineLobbyPanelController {
         network.getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions);
         network.getDelegateInputListener().SUBSCRIBE_MATCH(this::handleMatch);
 
-        network.SendCommand(Command.GET_GAMELIST);
-        network.SendCommand(Command.GET_PLAYERLIST);
+        network.sendCommand(Command.GET_GAMELIST);
+        network.sendCommand(Command.GET_PLAYERLIST);
     }
 
     public void handleInputPlayers(String input) {
-        // Avoiding a IllegalStateException by telling the program to update the UI in the JavaFX thread
-        Platform.runLater(
-                () -> playerList.getChildren().clear()
-        );
+        clearPlayerList();
 
         Matcher matcher = listPattern.matcher(input);
         String username = NetworkSingleton.getNetworkInstance().getUsername();
@@ -87,10 +84,7 @@ public class OnlineLobbyPanelController {
     }
 
     public void handleInputSubscriptions(String input) {
-        /// Avoiding a IllegalStateException by telling the program to update the UI in the JavaFX thread
-        Platform.runLater(
-                () -> subscriptionList.getChildren().clear()
-        );
+        clearPlayerList();
 
         challenges = new ArrayList<>();
         Matcher matcher = listPattern.matcher(input);
@@ -170,6 +164,13 @@ public class OnlineLobbyPanelController {
     }
 
     public void onRefreshPlayerListButtonActivated(ActionEvent actionEvent) {
-        NetworkSingleton.getNetworkInstance().SendCommand(Command.GET_PLAYERLIST);
+        NetworkSingleton.getNetworkInstance().sendCommand(Command.GET_PLAYERLIST);
+    }
+
+    private void clearPlayerList() {
+        // Avoiding a IllegalStateException by telling the program to update the UI in the JavaFX thread
+        Platform.runLater(
+                () -> playerList.getChildren().clear()
+        );
     }
 }

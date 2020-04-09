@@ -37,16 +37,12 @@ public class GamePanelController {
         gameInstance.onGameEnd(new GameEndListener() {
             @Override
             public void onGameEnd(AbstractTurnEntity winningTurnEntity, AbstractTurnEntity losingTurnEntity) {
-                //enableBackButton();
-                //centerStackPane.getChildren().clear();
-                //centerStackPane.getChildren().add(new Label(winningTurnEntity.getName() + " won!"));
+                endGame(winningTurnEntity.getName() + " won!");
             }
 
             @Override
             public void onGameEnd(AbstractTurnEntity[] tieTurnEntities) {
-                //enableBackButton();
-                //centerStackPane.getChildren().clear();
-                //centerStackPane.getChildren().add(new Label("It was a tie"));
+                endGame("It was a tie");
             }
         });
 
@@ -68,12 +64,21 @@ public class GamePanelController {
     }
 
     private void onGameStart(AbstractTurnEntity currentTurnEntity) {
-        //backButton.setDisable(true);
+        backButton.setDisable(true);
         setTurnLabelText(currentTurnEntity.getName());
     }
 
     private void endGame(String endMessage) {
+        Platform.runLater(() -> {
+            enableBackButton();
+            centerStackPane.getChildren().clear();
+            setTurnLabelText("");
 
+            // Create an ending message
+            Label endLabel = new Label(endMessage);
+            endLabel.setId("end-message-label");
+            centerStackPane.getChildren().add(endLabel);
+        });
     }
 
     private void enableBackButton() {

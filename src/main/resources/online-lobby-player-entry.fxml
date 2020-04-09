@@ -24,6 +24,11 @@
       </MenuButton>
    </right>
    <center>
-      <Button fx:id="challengeAcceptButton" mnemonicParsing="false" onAction="#onChallengeAcceptButtonActivated" text="Accept" BorderPane.alignment="CENTER" />
+      <StackPane minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="challengeAcceptButton" mnemonicParsing="false" onAction="#onChallengeAcceptButtonActivated" text="Accept" />
+            <Label fx:id="challengedLabel" text="Challenged" />
+         </children>
+      </StackPane>
    </center>
 </BorderPane>

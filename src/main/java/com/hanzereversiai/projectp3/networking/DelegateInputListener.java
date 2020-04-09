@@ -15,7 +15,7 @@ public class DelegateInputListener implements InputListener {
 
 
     public DelegateInputListener(Network network) {
-        network.Subscribe(this);
+        network.subscribe(this);
 
         move_inputListener = new DelegateInputListenerListener();
         playerlist_inputListener = new DelegateInputListenerListener();
@@ -79,7 +79,6 @@ public class DelegateInputListener implements InputListener {
         DelegateInputListenerListener() {
             inputListeners = new ArrayList<>();
         }
-
 
         @Override
         public void handleInput(String input) {
