@@ -14,8 +14,8 @@ public class NetworkTurnEntity extends AbstractTurnEntity {
     private final static Pattern movePattern = Pattern.compile("MOVE: \"(.*?)\",");
     private String username;
 
-    public NetworkTurnEntity() {
-        super(EntityType.AI);
+    public NetworkTurnEntity(String name) {
+        super(EntityType.AI, name);
         username = NetworkSingleton.getNetworkInstance().getUsername();
     }
 

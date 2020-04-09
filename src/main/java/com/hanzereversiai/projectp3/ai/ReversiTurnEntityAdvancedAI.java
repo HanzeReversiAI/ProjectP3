@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
+    public ReversiTurnEntityAdvancedAI(String name) {
+        super(name);
+    }
 
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {

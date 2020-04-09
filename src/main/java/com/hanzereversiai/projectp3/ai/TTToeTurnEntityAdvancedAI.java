@@ -4,8 +4,8 @@ import com.thowv.javafxgridgameboard.*;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeAlgorithms;
 
 public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
-    public TTToeTurnEntityAdvancedAI() {
-        super(EntityType.AI);
+    public TTToeTurnEntityAdvancedAI(String name) {
+        super(EntityType.AI, name);
     }
 
     @Override
