@@ -17,7 +17,6 @@ public class DebugOutputHandler implements Runnable {
     public void run() {
         while(true) {
             String input = scanner.nextLine();
-            System.out.println("SEND: " + input);
             writer.println(input);
         }
     }

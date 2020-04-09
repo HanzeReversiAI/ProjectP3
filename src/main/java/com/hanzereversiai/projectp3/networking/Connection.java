@@ -30,7 +30,7 @@ public class Connection {
         Thread debugOutputHandlerThread = new Thread(debugOutputHandler);
         debugOutputHandlerThread.start();
 
-        System.out.println("DEBUG: Connection initialized");
+        System.out.println("NETWORK: Connection initialized");
     }
 
     void send(String commandString) {

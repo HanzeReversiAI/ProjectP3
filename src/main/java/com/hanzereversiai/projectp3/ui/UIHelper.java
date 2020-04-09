@@ -23,8 +23,6 @@ public class UIHelper {
 
             Stage stage = (Stage) scene.getWindow();
 
-            System.out.println(scene.getWindow());
-
             stage.setScene(lobbyPanelScene);
             stage.show();
 

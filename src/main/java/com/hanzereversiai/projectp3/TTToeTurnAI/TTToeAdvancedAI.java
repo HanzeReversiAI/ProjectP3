@@ -11,8 +11,6 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
         GameBoardTile best = findBestMove(gameInstance);
-        System.out.print(best.getXCord());
-        System.out.println(best.getYCord());
         gameInstance.doTurn(best.getXCord(),best.getYCord());
     }
 

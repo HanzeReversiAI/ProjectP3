@@ -2,7 +2,6 @@ package com.hanzereversiai.projectp3.ui;
 
 import com.hanzereversiai.projectp3.GameFactory;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
-import javafx.animation.PauseTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 public class OfflineLobbyPanelController {
@@ -76,9 +74,6 @@ public class OfflineLobbyPanelController {
         if (gamePanelController != null)
             ((GamePanelController)gamePanelLoader.getController()).setGameBoard(gameInstance.getGameBoard());
 
-        // Temporary fix to prevent null pointer
-        PauseTransition pauseTransition = new PauseTransition(Duration.millis(100));
-        pauseTransition.setOnFinished(e -> gameInstance.startGame());
-        pauseTransition.play();
+        gameInstance.start();
     }
 }

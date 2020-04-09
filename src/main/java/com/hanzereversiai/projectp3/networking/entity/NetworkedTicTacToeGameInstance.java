@@ -15,15 +15,11 @@ public class NetworkedTicTacToeGameInstance extends TTToeGameInstance implements
 
     @Override
     public void handleInput(String input) {
-        if (getEntityOne() instanceof NetworkTurnEntity) {
-           NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getEntityOne();
-           networkTurnEntity.handleInput(input);
-           networkTurnEntity.takeTurn(this);
-        }
-        else if (getEntityTwo() instanceof NetworkTurnEntity) {
-            NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getEntityOne();
-            networkTurnEntity.handleInput(input);
-            networkTurnEntity.takeTurn(this);
+        if (getCurrentTurnEntity() instanceof  NetworkTurnEntity) {
+            NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getCurrentTurnEntity();
+            networkTurnEntity.handleInput(input, this);
+        } else {
+            throw new IllegalStateException();
         }
     }
 
