@@ -2,6 +2,7 @@ package com.hanzereversiai.projectp3.ui;
 
 import com.hanzereversiai.projectp3.GameFactory;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -74,6 +75,6 @@ public class OfflineLobbyPanelController {
         if (gamePanelController != null)
             ((GamePanelController)gamePanelLoader.getController()).setGameBoard(gameInstance.getGameBoard());
 
-        gameInstance.start();
+        Platform.runLater(gameInstance::start);
     }
 }

@@ -1,10 +1,10 @@
-package com.hanzereversiai.projectp3.TTToeTurnAI;
+package com.hanzereversiai.projectp3.ai;
 
 import com.thowv.javafxgridgameboard.*;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeAlgorithms;
 
-public class TTToeAdvancedAI extends AbstractTurnEntity {
-    public TTToeAdvancedAI() {
+public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
+    public TTToeTurnEntityAdvancedAI() {
         super(EntityType.AI);
     }
 

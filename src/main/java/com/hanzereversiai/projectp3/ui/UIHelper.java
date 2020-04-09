@@ -16,10 +16,12 @@ public class UIHelper {
 
     public static FXMLLoader switchScene(Scene scene, String fxml) {
         try {
+            double width = scene.getWidth();
+            double height = scene.getHeight();
+
             FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("/" + fxml + ".fxml"));
-            System.out.println(loader);
             Parent lobbyPanelParent = loader.load();
-            Scene lobbyPanelScene = new Scene(lobbyPanelParent);
+            Scene lobbyPanelScene = new Scene(lobbyPanelParent, width, height);
 
             Stage stage = (Stage) scene.getWindow();
 

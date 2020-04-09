@@ -18,19 +18,20 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
     @Override
     public void handleInput(String input) {
         if (getCurrentTurnEntity() instanceof  NetworkTurnEntity) {
-            NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getCurrentTurnEntity();
-            networkTurnEntity.handleInput(input, this);
+           NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getCurrentTurnEntity();
+           networkTurnEntity.handleInput(input, this);
         }
     }
 
     @Override
     public void doTurn(int x, int y) {
-        doTurnFromNetwork(x, y
+        doTurnFromNetwork(x, y);
 
         int width = getGameBoard().getSize();
         int move = (width * y) + x;
         NetworkSingleton.getNetworkInstance().SendCommand(Command.MOVE, String.valueOf(move));
     }
+
     public void doTurnFromNetwork(int x, int y) {
         super.doTurn(x, y);
     }
@@ -47,3 +48,4 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
 
         super.startGame(this);
     }
+}
