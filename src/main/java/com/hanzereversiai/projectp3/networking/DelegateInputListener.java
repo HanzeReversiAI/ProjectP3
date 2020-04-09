@@ -10,6 +10,9 @@ public class DelegateInputListener implements InputListener {
     private DelegateInputListenerListener challenge_inputListener;
     private DelegateInputListenerListener gameMatch_inputListener;
     private DelegateInputListenerListener gameYourTurn_inputListener;
+    private DelegateInputListenerListener gameWIN_inputListener;
+    private DelegateInputListenerListener gameLOSS_inputListener;
+
 
     public DelegateInputListener(Network network) {
         network.Subscribe(this);
@@ -20,6 +23,8 @@ public class DelegateInputListener implements InputListener {
         challenge_inputListener = new DelegateInputListenerListener();
         gameMatch_inputListener = new DelegateInputListenerListener();
         gameYourTurn_inputListener = new DelegateInputListenerListener();
+        gameWIN_inputListener = new DelegateInputListenerListener();
+        gameLOSS_inputListener = new DelegateInputListenerListener();
     }
 
     @Override
@@ -36,6 +41,10 @@ public class DelegateInputListener implements InputListener {
             gameMatch_inputListener.handleInput(input);
         } else if (input.startsWith("SVR GAME YOURTURN")) {
             gameYourTurn_inputListener.handleInput(input);
+        } else if (input.startsWith("SVR GAME YOURTURN")) {
+            gameWIN_inputListener.handleInput(input);
+        } else if (input.startsWith("SVR GAME YOURTURN")) {
+            gameLOSS_inputListener.handleInput(input);
         }
     }
 
@@ -56,6 +65,12 @@ public class DelegateInputListener implements InputListener {
     }
     public void SUBSCRIBE_YOURTURN(InputListener inputListener) {
         gameYourTurn_inputListener.subscribe(inputListener);
+    }
+    public void SUBSCRIBE_WIN(InputListener inputListener) {
+        gameWIN_inputListener.subscribe(inputListener);
+    }
+    public void SUBSCRIBE_LOSS(InputListener inputListener) {
+        gameLOSS_inputListener.subscribe(inputListener);
     }
 
     class DelegateInputListenerListener implements InputListener {
