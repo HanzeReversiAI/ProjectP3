@@ -1,5 +1,6 @@
 package com.hanzereversiai.projectp3;
 
+import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +17,12 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setTitle("Tournament framework");
         stage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        NetworkSingleton.getNetworkInstance().stopConnection();
+        super.stop();
     }
 
     public static void main(String[] args) {

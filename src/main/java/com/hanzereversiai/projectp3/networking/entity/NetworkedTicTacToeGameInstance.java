@@ -29,6 +29,6 @@ public class NetworkedTicTacToeGameInstance extends TTToeGameInstance implements
 
         int width = getGameBoard().getSize();
         int move = (width * y) + x;
-        NetworkSingleton.getNetworkInstance().SendCommand(Command.MOVE, String.valueOf(move));
+        NetworkSingleton.getNetworkInstance().sendCommand(Command.MOVE, String.valueOf(move));
     }
 }
