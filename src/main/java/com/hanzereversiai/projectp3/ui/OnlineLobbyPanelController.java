@@ -1,10 +1,9 @@
 package com.hanzereversiai.projectp3.ui;
 
-import com.hanzereversiai.projectp3.GameFactory;
 import com.hanzereversiai.projectp3.networking.Command;
+import com.hanzereversiai.projectp3.networking.EventHandlerHelper;
 import com.hanzereversiai.projectp3.networking.Network;
 import com.hanzereversiai.projectp3.networking.NetworkSingleton;
-import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,12 +22,8 @@ import java.util.regex.Pattern;
 public class OnlineLobbyPanelController {
 
     private final static Pattern listPattern = Pattern.compile("\"(.*?)\"[,\\]]");
-    private final static Pattern gameTypePattern = Pattern.compile("GAMETYPE: \"(.*?)\"");
-    private final static Pattern opponentPattern = Pattern.compile("OPPONENT: \"(.*?)\"");
-    private final static Pattern startingPlayerPattern = Pattern.compile("PLAYERTOMOVE: \"(.*?)\"");
 
     private ArrayList<String> challenges;
-    private GamePanelController gamePanelController;
 
     public SplitPane lobbyPanelRoot;
     public VBox playerList;
@@ -41,13 +36,7 @@ public class OnlineLobbyPanelController {
         playerList.getChildren().clear();
         subscriptionList.getChildren().clear();
 
-        Network network = NetworkSingleton.getNetworkInstance();
-        network.getDelegateInputListener().SUBSCRIBE_PLAYERLIST(this::handleInputPlayers, this.hashCode());
-        network.getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions, this.hashCode()  +1);
-        network.getDelegateInputListener().SUBSCRIBE_MATCH(this::handleMatch, this.hashCode() + 2);
-
-        network.sendCommand(Command.GET_GAMELIST);
-        network.sendCommand(Command.GET_PLAYERLIST);
+        subscribeAll(NetworkSingleton.getNetworkInstance());
     }
 
     public void handleInputPlayers(String input) {
@@ -110,65 +99,9 @@ public class OnlineLobbyPanelController {
         }
     }
 
-    public void handleMatch(String input) {
-        BoardGameOption boardGameOption;
-        String opponentName;
-
-        // Game type matching
-        Matcher matcher = gameTypePattern.matcher(input);
-
-        if (!matcher.find())
-            return;
-
-        if (matcher.group(1).equals("Tic-tac-toe"))
-            boardGameOption = new BoardGameOption("Tic-tac-toe", "tttoe");
-        else if (matcher.group(1).equals("Reversi"))
-            boardGameOption = new BoardGameOption("Reversi", "reversi");
-        else
-            throw new IllegalArgumentException("Unsupported Game: " + matcher.group(1));
-
-        // Opponent matching
-        matcher = opponentPattern.matcher(input);
-
-        if (!matcher.find())
-            return;
-
-        opponentName = matcher.group(1);
-
-        // Stating player matching
-        matcher = startingPlayerPattern.matcher(input);
-
-        if (!matcher.find())
-            return;
-
-        String playerOne, playerTwo;
-
-        if (matcher.group(1).equals(NetworkSingleton.getNetworkInstance().getUsername())) {
-            playerOne = "Player";
-            playerTwo = "Network-" + opponentName;
-        }
-        else {
-            playerOne = "Network-" + opponentName;
-            playerTwo = "Player";
-        }
-
-        if (gamePanelController != null) {
-            Platform.runLater(
-                    () -> UIHelper.switchScene(lobbyPanelRoot.getScene(), "lobby-panel")
-            );
-        }
-
-        Platform.runLater(() -> {
-            FXMLLoader gamePanelLoader = UIHelper.switchScene(lobbyPanelRoot.getScene(), "game-panel");
-
-            AbstractGameInstance gameInstance = GameFactory.buildNetworkedGameInstance(
-                    boardGameOption, playerOne, playerTwo);
-
-            // Set the game board in the panel
-            gamePanelController = gamePanelLoader != null ? gamePanelLoader.getController() : null;
-            if (gamePanelController != null)
-                ((GamePanelController)gamePanelLoader.getController()).setGameInstance(gameInstance);
-        });
+    private void handleMatch(String input) {
+        unsubscribeAll(NetworkSingleton.getNetworkInstance());
+        EventHandlerHelper.handleMatch(input, lobbyPanelRoot);
     }
 
     public void onRefreshPlayerListButtonActivated(ActionEvent actionEvent) {
@@ -180,5 +113,20 @@ public class OnlineLobbyPanelController {
         Platform.runLater(
                 () -> playerList.getChildren().clear()
         );
+    }
+
+    private void subscribeAll(Network network) {
+        network.getDelegateInputListener().SUBSCRIBE_PLAYERLIST(this::handleInputPlayers, this.hashCode());
+        network.getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions, this.hashCode());
+        network.getDelegateInputListener().SUBSCRIBE_MATCH(this::handleMatch, this.hashCode());
+
+        network.sendCommand(Command.GET_GAMELIST);
+        network.sendCommand(Command.GET_PLAYERLIST);
+    }
+
+    private void unsubscribeAll(Network network) {
+        network.getDelegateInputListener().UNSUBSCRIBE_PLAYERLIST(this.hashCode());
+        network.getDelegateInputListener().UNSUBSCRIBE_GAMELIST(this.hashCode());
+        network.getDelegateInputListener().UNSUBSCRIBE_MATCH(this.hashCode());
     }
 }

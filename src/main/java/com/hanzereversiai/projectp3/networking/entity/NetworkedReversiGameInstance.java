@@ -76,12 +76,11 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
     }
 
     private AbstractTurnEntity getNotCurrentTurnEntity() {
-        AbstractTurnEntity current = getCurrentTurnEntity();
-        for (AbstractTurnEntity entity : getTurnEntities()){
-            if (!entity.equals(current)) {
+        for (AbstractTurnEntity entity : getTurnEntities()) {
+            if (!entity.equals(getCurrentTurnEntity()))
                 return  entity;
-            }
         }
+
         return null;
     }
 }

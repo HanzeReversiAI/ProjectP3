@@ -1,6 +1,8 @@
 package com.hanzereversiai.projectp3.networking;
 
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DelegateInputListener implements InputListener {
 
@@ -105,7 +107,6 @@ public class DelegateInputListener implements InputListener {
     }
 
 
-
     class DelegateInputListenerListener implements InputListener {
         private HashMap<Integer, InputListener> inputListeners;
 
@@ -123,6 +124,7 @@ public class DelegateInputListener implements InputListener {
         public void subscribe(InputListener inputListener, int hash) {
             inputListeners.put(hash, inputListener);
         }
+
         public void unsubscribe(int hash) {
             inputListeners.remove(hash);
         }
