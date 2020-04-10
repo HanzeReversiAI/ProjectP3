@@ -28,6 +28,7 @@ public class OnlineLobbyPanelController {
     private final static Pattern startingPlayerPattern = Pattern.compile("PLAYERTOMOVE: \"(.*?)\"");
 
     private ArrayList<String> challenges;
+    private GamePanelController gamePanelController;
 
     public SplitPane lobbyPanelRoot;
     public VBox playerList;
@@ -151,6 +152,12 @@ public class OnlineLobbyPanelController {
             playerTwo = "Player";
         }
 
+        if (gamePanelController != null) {
+            Platform.runLater(
+                    () -> UIHelper.switchScene(lobbyPanelRoot.getScene(), "lobby-panel")
+            );
+        }
+
         Platform.runLater(() -> {
             FXMLLoader gamePanelLoader = UIHelper.switchScene(lobbyPanelRoot.getScene(), "game-panel");
 
@@ -158,7 +165,7 @@ public class OnlineLobbyPanelController {
                     boardGameOption, playerOne, playerTwo);
 
             // Set the game board in the panel
-            GamePanelController gamePanelController = gamePanelLoader != null ? gamePanelLoader.getController() : null;
+            gamePanelController = gamePanelLoader != null ? gamePanelLoader.getController() : null;
             if (gamePanelController != null)
                 ((GamePanelController)gamePanelLoader.getController()).setGameInstance(gameInstance);
         });

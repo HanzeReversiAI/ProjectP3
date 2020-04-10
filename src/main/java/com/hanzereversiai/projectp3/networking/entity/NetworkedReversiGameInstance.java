@@ -1,9 +1,6 @@
 package com.hanzereversiai.projectp3.networking.entity;
 
-import com.hanzereversiai.projectp3.networking.Command;
-import com.hanzereversiai.projectp3.networking.InputListener;
-import com.hanzereversiai.projectp3.networking.NetworkSingleton;
-import com.hanzereversiai.projectp3.networking.NetworkedGameInstance;
+import com.hanzereversiai.projectp3.networking.*;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 import com.thowv.javafxgridgameboard.GameBoard;
 import com.thowv.javafxgridgameboard.GameBoardTileType;
@@ -12,9 +9,11 @@ import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
 public class NetworkedReversiGameInstance extends ReversiGameInstance implements InputListener, NetworkedGameInstance {
     public NetworkedReversiGameInstance(GameBoard gameBoard, AbstractTurnEntity entityOne, AbstractTurnEntity entityTwo) {
         super(gameBoard, entityOne, entityTwo);
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_MOVE(this);
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_WIN(this::endGameWin);
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_LOSS(this::endGameLoss);
+        DelegateInputListener delegateInputListener = NetworkSingleton.getNetworkInstance().getDelegateInputListener();
+        delegateInputListener.SUBSCRIBE_MOVE(this);
+        delegateInputListener.SUBSCRIBE_WIN(this::endGameWin);
+        delegateInputListener.SUBSCRIBE_LOSS(this::endGameLoss);
+        delegateInputListener.SUBSCRIBE_YOURTURN(this::getTurnFromNetwork);
     }
 
     @Override
@@ -51,6 +50,13 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
         super.startGame(this);
     }
 
+    public void getTurnFromNetwork(String input) {
+        if (getCurrentTurnEntity() instanceof  NetworkTurnEntity) {
+            NetworkTurnEntity networkTurnEntity = (NetworkTurnEntity) getCurrentTurnEntity();
+            networkTurnEntity.getTurnFromNetwork(this);
+        }
+    }
+
     public void endGameWin(String input) {
         disconnect();
         super.end(getCurrentTurnEntity(), getNotCurrentTurnEntity());
@@ -62,11 +68,11 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
     }
 
     private void disconnect() {
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().UNSUBSCRIBE_MOVE(this);
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().UNSUBSCRIBE_WIN(this);
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().UNSUBSCRIBE_LOSS(this);
-
-
+        DelegateInputListener delegateInputListener = NetworkSingleton.getNetworkInstance().getDelegateInputListener();
+        delegateInputListener.UNSUBSCRIBE_MOVE(this);
+        delegateInputListener.UNSUBSCRIBE_WIN(this::endGameWin);
+        delegateInputListener.UNSUBSCRIBE_LOSS(this::endGameLoss);
+        delegateInputListener.UNSUBSCRIBE_YOURTURN(this::getTurnFromNetwork);
     }
 
     private AbstractTurnEntity getNotCurrentTurnEntity() {
