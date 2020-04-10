@@ -1,12 +1,10 @@
 package com.hanzereversiai.projectp3;
 
-import com.hanzereversiai.projectp3.TTToeTurnAI.TTToeAdvancedAI;
-import com.hanzereversiai.projectp3.reversiai.ReversiAi;
+import com.hanzereversiai.projectp3.ai.ReversiTurnEntityAdvancedAI;
+import com.hanzereversiai.projectp3.ai.TTToeTurnEntityAdvancedAI;
 import com.hanzereversiai.projectp3.networking.entity.NetworkTurnEntity;
 import com.hanzereversiai.projectp3.networking.entity.NetworkedReversiGameInstance;
 import com.hanzereversiai.projectp3.networking.entity.NetworkedTicTacToeGameInstance;
-import com.hanzereversiai.projectp3.ai.TTToeTurnEntityAdvancedAI;
-import com.hanzereversiai.projectp3.ai.ReversiTurnEntityAdvancedAI;
 import com.hanzereversiai.projectp3.ui.BoardGameOption;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
