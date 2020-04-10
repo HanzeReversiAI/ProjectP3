@@ -51,27 +51,60 @@ public class DelegateInputListener implements InputListener {
     public void SUBSCRIBE_MOVE(InputListener inputListener) {
         move_inputListener.subscribe(inputListener);
     }
+    public void UNSUBSCRIBE_MOVE(InputListener inputListener) {
+        move_inputListener.unsubscribe(inputListener);
+    }
+
     public void SUBSCRIBE_PLAYERLIST(InputListener inputListener) {
         playerlist_inputListener.subscribe(inputListener);
     }
+    public void UNSUBSCRIBE_PLAYERLIST(InputListener inputListener) {
+        playerlist_inputListener.unsubscribe(inputListener);
+    }
+
     public void SUBSCRIBE_GAMELIST(InputListener inputListener) {
         gamelist_inputListener.subscribe(inputListener);
     }
+    public void UNSUBSCRIBE_GAMELIST(InputListener inputListener) {
+        gamelist_inputListener.unsubscribe(inputListener);
+    }
+
     public void SUBSCRIBE_CHALLENGE(InputListener inputListener) {
         challenge_inputListener.subscribe(inputListener);
     }
+    public void UNSUBSCRIBE_CHALLENGE(InputListener inputListener) {
+        challenge_inputListener.unsubscribe(inputListener);
+    }
+
     public void SUBSCRIBE_MATCH(InputListener inputListener) {
         gameMatch_inputListener.subscribe(inputListener);
     }
+    public void UNSUBSCRIBE_MATCH(InputListener inputListener) {
+        gameMatch_inputListener.unsubscribe(inputListener);
+    }
+
     public void SUBSCRIBE_YOURTURN(InputListener inputListener) {
         gameYourTurn_inputListener.subscribe(inputListener);
     }
+    public void UNSUBSCRIBE_YOURTURN(InputListener inputListener) {
+        gameYourTurn_inputListener.unsubscribe(inputListener);
+    }
+
     public void SUBSCRIBE_WIN(InputListener inputListener) {
         gameWIN_inputListener.subscribe(inputListener);
     }
+    public void UNSUBSCRIBE_WIN(InputListener inputListener) {
+        gameWIN_inputListener.unsubscribe(inputListener);
+    }
+
     public void SUBSCRIBE_LOSS(InputListener inputListener) {
         gameLOSS_inputListener.subscribe(inputListener);
     }
+    public void UNSUBSCRIBE_LOSS(InputListener inputListener) {
+        gameLOSS_inputListener.unsubscribe(inputListener);
+    }
+
+
 
     class DelegateInputListenerListener implements InputListener {
         private ArrayList<InputListener> inputListeners;
@@ -90,5 +123,6 @@ public class DelegateInputListener implements InputListener {
         public void subscribe(InputListener inputListener) {
             inputListeners.add(inputListener);
         }
+        public void unsubscribe(InputListener inputListener) { inputListeners.remove(inputListener); }
     }
 }

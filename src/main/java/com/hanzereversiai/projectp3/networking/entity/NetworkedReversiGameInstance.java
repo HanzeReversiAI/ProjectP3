@@ -52,10 +52,30 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
     }
 
     public void endGameWin(String input) {
-        super.end(getCurrentTurnEntity(), getCurrentTurnEntity());
+        disconnect();
+        super.end(getCurrentTurnEntity(), getNotCurrentTurnEntity());
     }
 
     public void endGameLoss(String input) {
-        super.end(getCurrentTurnEntity(), getCurrentTurnEntity());
+        disconnect();
+        super.end(getNotCurrentTurnEntity(), getCurrentTurnEntity());
+    }
+
+    private void disconnect() {
+        NetworkSingleton.getNetworkInstance().getDelegateInputListener().UNSUBSCRIBE_MOVE(this);
+        NetworkSingleton.getNetworkInstance().getDelegateInputListener().UNSUBSCRIBE_WIN(this);
+        NetworkSingleton.getNetworkInstance().getDelegateInputListener().UNSUBSCRIBE_LOSS(this);
+
+
+    }
+
+    private AbstractTurnEntity getNotCurrentTurnEntity() {
+        AbstractTurnEntity current = getCurrentTurnEntity();
+        for (AbstractTurnEntity entity : getTurnEntities()){
+            if (!entity.equals(current)) {
+                return  entity;
+            }
+        }
+        return null;
     }
 }
