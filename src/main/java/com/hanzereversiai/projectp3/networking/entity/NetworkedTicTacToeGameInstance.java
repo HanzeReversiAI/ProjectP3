@@ -10,7 +10,7 @@ import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeGameInstance;
 public class NetworkedTicTacToeGameInstance extends TTToeGameInstance implements InputListener {
     public NetworkedTicTacToeGameInstance(GameBoard gameBoard, AbstractTurnEntity entityOne, AbstractTurnEntity entityTwo) {
         super(gameBoard, entityOne, entityTwo);
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_MOVE(this);
+        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_MOVE(this, this.hashCode());
     }
 
     @Override

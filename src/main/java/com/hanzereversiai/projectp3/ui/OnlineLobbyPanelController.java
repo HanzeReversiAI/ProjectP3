@@ -42,9 +42,9 @@ public class OnlineLobbyPanelController {
         subscriptionList.getChildren().clear();
 
         Network network = NetworkSingleton.getNetworkInstance();
-        network.getDelegateInputListener().SUBSCRIBE_PLAYERLIST(this::handleInputPlayers);
-        network.getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions);
-        network.getDelegateInputListener().SUBSCRIBE_MATCH(this::handleMatch);
+        network.getDelegateInputListener().SUBSCRIBE_PLAYERLIST(this::handleInputPlayers, this.hashCode());
+        network.getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions, this.hashCode()  +1);
+        network.getDelegateInputListener().SUBSCRIBE_MATCH(this::handleMatch, this.hashCode() + 2);
 
         network.sendCommand(Command.GET_GAMELIST);
         network.sendCommand(Command.GET_PLAYERLIST);

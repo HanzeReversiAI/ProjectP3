@@ -10,10 +10,10 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
     public NetworkedReversiGameInstance(GameBoard gameBoard, AbstractTurnEntity entityOne, AbstractTurnEntity entityTwo) {
         super(gameBoard, entityOne, entityTwo);
         DelegateInputListener delegateInputListener = NetworkSingleton.getNetworkInstance().getDelegateInputListener();
-        delegateInputListener.SUBSCRIBE_MOVE(this);
-        delegateInputListener.SUBSCRIBE_WIN(this::endGameWin);
-        delegateInputListener.SUBSCRIBE_LOSS(this::endGameLoss);
-        delegateInputListener.SUBSCRIBE_YOURTURN(this::getTurnFromNetwork);
+        delegateInputListener.SUBSCRIBE_MOVE(this, this.hashCode());
+        delegateInputListener.SUBSCRIBE_WIN(this::endGameWin, this.hashCode() + 1);
+        delegateInputListener.SUBSCRIBE_LOSS(this::endGameLoss, this.hashCode() + 2);
+        delegateInputListener.SUBSCRIBE_YOURTURN(this::getTurnFromNetwork, this.hashCode() + 3);
     }
 
     @Override
@@ -69,10 +69,10 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
 
     private void disconnect() {
         DelegateInputListener delegateInputListener = NetworkSingleton.getNetworkInstance().getDelegateInputListener();
-        delegateInputListener.UNSUBSCRIBE_MOVE(this);
-        delegateInputListener.UNSUBSCRIBE_WIN(this::endGameWin);
-        delegateInputListener.UNSUBSCRIBE_LOSS(this::endGameLoss);
-        delegateInputListener.UNSUBSCRIBE_YOURTURN(this::getTurnFromNetwork);
+        delegateInputListener.UNSUBSCRIBE_MOVE(this.hashCode());
+        delegateInputListener.UNSUBSCRIBE_WIN(this.hashCode() + 1);
+        delegateInputListener.UNSUBSCRIBE_LOSS(this.hashCode() + 2);
+        delegateInputListener.UNSUBSCRIBE_YOURTURN(this.hashCode() + 3);
     }
 
     private AbstractTurnEntity getNotCurrentTurnEntity() {

@@ -33,7 +33,7 @@ public class OnlineLobbyPlayerEntryController {
     public void initialize() {
         hideChallengeAcceptButton();
         hideChallengedLabel();
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_CHALLENGE(this::handleChallenge);
+        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_CHALLENGE(this::handleChallenge, this.hashCode());
     }
 
     public void onChallengeAcceptButtonActivated(ActionEvent actionEvent) {

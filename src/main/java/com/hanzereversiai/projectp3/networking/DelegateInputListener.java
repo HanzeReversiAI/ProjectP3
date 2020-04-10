@@ -1,6 +1,6 @@
 package com.hanzereversiai.projectp3.networking;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DelegateInputListener implements InputListener {
 
@@ -48,81 +48,83 @@ public class DelegateInputListener implements InputListener {
         }
     }
 
-    public void SUBSCRIBE_MOVE(InputListener inputListener) {
-        move_inputListener.subscribe(inputListener);
+    public void SUBSCRIBE_MOVE(InputListener inputListener, int hash) {
+        move_inputListener.subscribe(inputListener, hash);
     }
-    public void UNSUBSCRIBE_MOVE(InputListener inputListener) {
-        move_inputListener.unsubscribe(inputListener);
-    }
-
-    public void SUBSCRIBE_PLAYERLIST(InputListener inputListener) {
-        playerlist_inputListener.subscribe(inputListener);
-    }
-    public void UNSUBSCRIBE_PLAYERLIST(InputListener inputListener) {
-        playerlist_inputListener.unsubscribe(inputListener);
+    public void UNSUBSCRIBE_MOVE(int hash) {
+        move_inputListener.unsubscribe(hash);
     }
 
-    public void SUBSCRIBE_GAMELIST(InputListener inputListener) {
-        gamelist_inputListener.subscribe(inputListener);
+    public void SUBSCRIBE_PLAYERLIST(InputListener inputListener, int hash) {
+        playerlist_inputListener.subscribe(inputListener, hash);
     }
-    public void UNSUBSCRIBE_GAMELIST(InputListener inputListener) {
-        gamelist_inputListener.unsubscribe(inputListener);
-    }
-
-    public void SUBSCRIBE_CHALLENGE(InputListener inputListener) {
-        challenge_inputListener.subscribe(inputListener);
-    }
-    public void UNSUBSCRIBE_CHALLENGE(InputListener inputListener) {
-        challenge_inputListener.unsubscribe(inputListener);
+    public void UNSUBSCRIBE_PLAYERLIST(int hash) {
+        playerlist_inputListener.unsubscribe(hash);
     }
 
-    public void SUBSCRIBE_MATCH(InputListener inputListener) {
-        gameMatch_inputListener.subscribe(inputListener);
+    public void SUBSCRIBE_GAMELIST(InputListener inputListener, int hash) {
+        gamelist_inputListener.subscribe(inputListener, hash);
     }
-    public void UNSUBSCRIBE_MATCH(InputListener inputListener) {
-        gameMatch_inputListener.unsubscribe(inputListener);
-    }
-
-    public void SUBSCRIBE_YOURTURN(InputListener inputListener) {
-        gameYourTurn_inputListener.subscribe(inputListener);
-    }
-    public void UNSUBSCRIBE_YOURTURN(InputListener inputListener) {
-        gameYourTurn_inputListener.unsubscribe(inputListener);
+    public void UNSUBSCRIBE_GAMELIST(int hash) {
+        gamelist_inputListener.unsubscribe(hash);
     }
 
-    public void SUBSCRIBE_WIN(InputListener inputListener) {
-        gameWIN_inputListener.subscribe(inputListener);
+    public void SUBSCRIBE_CHALLENGE(InputListener inputListener, int hash) {
+        challenge_inputListener.subscribe(inputListener, hash);
     }
-    public void UNSUBSCRIBE_WIN(InputListener inputListener) {
-        gameWIN_inputListener.unsubscribe(inputListener);
+    public void UNSUBSCRIBE_CHALLENGE(int hash) {
+        challenge_inputListener.unsubscribe(hash);
     }
 
-    public void SUBSCRIBE_LOSS(InputListener inputListener) {
-        gameLOSS_inputListener.subscribe(inputListener);
+    public void SUBSCRIBE_MATCH(InputListener inputListener, int hash) {
+        gameMatch_inputListener.subscribe(inputListener, hash);
     }
-    public void UNSUBSCRIBE_LOSS(InputListener inputListener) {
-        gameLOSS_inputListener.unsubscribe(inputListener);
+    public void UNSUBSCRIBE_MATCH(int hash) {
+        gameMatch_inputListener.unsubscribe(hash);
+    }
+
+    public void SUBSCRIBE_YOURTURN(InputListener inputListener, int hash) {
+        gameYourTurn_inputListener.subscribe(inputListener, hash);
+    }
+    public void UNSUBSCRIBE_YOURTURN(int hash) {
+        gameYourTurn_inputListener.unsubscribe(hash);
+    }
+
+    public void SUBSCRIBE_WIN(InputListener inputListener, int hash) {
+        gameWIN_inputListener.subscribe(inputListener, hash);
+    }
+    public void UNSUBSCRIBE_WIN(int hash) {
+        gameWIN_inputListener.unsubscribe(hash);
+    }
+
+    public void SUBSCRIBE_LOSS(InputListener inputListener, int hash) {
+        gameLOSS_inputListener.subscribe(inputListener, hash);
+    }
+    public void UNSUBSCRIBE_LOSS(int hash) {
+        gameLOSS_inputListener.unsubscribe(hash);
     }
 
 
 
     class DelegateInputListenerListener implements InputListener {
-        private ArrayList<InputListener> inputListeners;
+        private HashMap<Integer, InputListener> inputListeners;
 
         DelegateInputListenerListener() {
-            inputListeners = new ArrayList<>();
+            inputListeners = new HashMap<>();
         }
 
         @Override
         public void handleInput(String input) {
-            for (InputListener inputListener: inputListeners) {
+            for (InputListener inputListener: inputListeners.values()) {
                 inputListener.handleInput(input);
             }
         }
 
-        public void subscribe(InputListener inputListener) {
-            inputListeners.add(inputListener);
+        public void subscribe(InputListener inputListener, int hash) {
+            inputListeners.put(hash, inputListener);
         }
-        public void unsubscribe(InputListener inputListener) { inputListeners.remove(inputListener); }
+        public void unsubscribe(int hash) {
+            inputListeners.remove(hash);
+        }
     }
 }
