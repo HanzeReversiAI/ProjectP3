@@ -19,11 +19,11 @@ public class OnlineLobbyPlayerEntryController {
     private final static Pattern challengerPattern = Pattern.compile("CHALLENGER: \"(.*?)\",");
     private final static Pattern numberPattern = Pattern.compile("CHALLENGENUMBER: \"(.*?)\",");
 
-
     public BorderPane rootBorderPane;
     public Label playerNameLabel;
     public Button challengeAcceptButton;
     public MenuButton challengeMenuButton;
+    public Label challengedLabel;
 
     private String game;
     private String opponent;
@@ -32,7 +32,44 @@ public class OnlineLobbyPlayerEntryController {
     @FXML
     public void initialize() {
         hideChallengeAcceptButton();
+        hideChallengedLabel();
         NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_CHALLENGE(this::handleChallenge);
+    }
+
+    public void onChallengeAcceptButtonActivated(ActionEvent actionEvent) {
+        NetworkSingleton.getNetworkInstance().sendCommand(Command.ACCEPT_CHALLENGE, String.valueOf(challengeNumber));
+    }
+
+    public void onChallengeAcceptMenuButtonActivated(ActionEvent actionEvent, String game, String player) {
+        NetworkSingleton.getNetworkInstance().sendCommand(Command.CHALLENGE, "\"" + player + "\" \"" + game + "\"");
+
+        hideChallengeAcceptButton();
+        showChallengedLabel();
+    }
+
+    // TODO: If the player is not in the overview no accept button will appear,
+    // TODO: calling the getPlayerList command however causes the screen to not update in time.
+    public void handleChallenge(String input) {
+        Matcher matcher = challengerPattern.matcher(input);
+
+        if (matcher.find() && matcher.group(1).equals(playerNameLabel.getText())) {
+            hideChallengedLabel();
+            showChallengeAcceptButton();
+
+            matcher = gamePattern.matcher(input);
+
+            if (matcher.find())
+                game = matcher.group(1);
+            else
+                throw new IllegalArgumentException();
+
+            matcher = numberPattern.matcher(input);
+
+            if (matcher.find())
+                challengeNumber = Integer.parseInt(matcher.group(1));
+            else
+                throw new IllegalArgumentException();
+        }
     }
 
     public void setPlayerName(String playerName) {
@@ -48,45 +85,18 @@ public class OnlineLobbyPlayerEntryController {
     }
 
     public void hideChallengeAcceptButton() {
-        challengeAcceptButton.setVisible(false);
+        Platform.runLater(() -> challengeAcceptButton.setVisible(false));
     }
 
     public void showChallengeAcceptButton() {
-        challengeAcceptButton.setVisible(true);
+        Platform.runLater(() -> challengeAcceptButton.setVisible(true));
     }
 
-    public void onChallengeAcceptButtonActivated(ActionEvent actionEvent) {
-        NetworkSingleton.getNetworkInstance().SendCommand(Command.ACCEPT_CHALLENGE, String.valueOf(challengeNumber));
+    public void hideChallengedLabel() {
+        Platform.runLater(() -> challengedLabel.setVisible(false));
     }
 
-    public void onChallengeAcceptMenuButtonActivated(ActionEvent actionEvent, String game, String player) {
-        NetworkSingleton.getNetworkInstance().SendCommand(Command.CHALLENGE, "\"" + player + "\" \"" + game + "\"");
-        challengeMenuButton.setVisible(false);
-    }
-
-    // TODO: If the player is not in the overview no accept button will appear,
-    // TODO: calling the getPlayerList command however causes the screen to not update in time.
-    public void handleChallenge(String input) {
-        Matcher m = challengerPattern.matcher(input);
-        if (m.find()) {
-            if (m.group(1).equals(playerNameLabel.getText())) {
-                Platform.runLater(
-                        this::showChallengeAcceptButton
-                );
-                m = gamePattern.matcher(input);
-                if (m.find()) {
-                    game = m.group(1);
-                } else {
-                    throw new IllegalArgumentException();
-                }
-                m = numberPattern.matcher(input);
-                if (m.find()) {
-                    challengeNumber = Integer.parseInt(m.group(1));
-                } else {
-                    throw new IllegalArgumentException();
-                }
-
-            }
-        }
+    public void showChallengedLabel() {
+        Platform.runLater(() -> challengedLabel.setVisible(true));
     }
 }

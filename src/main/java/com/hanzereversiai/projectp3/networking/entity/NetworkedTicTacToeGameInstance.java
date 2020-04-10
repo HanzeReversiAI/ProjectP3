@@ -1,5 +1,6 @@
 package com.hanzereversiai.projectp3.networking.entity;
 
+import com.hanzereversiai.projectp3.networking.Command;
 import com.hanzereversiai.projectp3.networking.InputListener;
 import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
@@ -14,15 +15,20 @@ public class NetworkedTicTacToeGameInstance extends TTToeGameInstance implements
 
     @Override
     public void handleInput(String input) {
-        if (getEntityOne() instanceof NetworkTurnEntity) {
-           NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getEntityOne();
-           networkTurnEntity.handleInput(input);
-           networkTurnEntity.takeTurn(this);
+        if (getCurrentTurnEntity() instanceof  NetworkTurnEntity) {
+            NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getCurrentTurnEntity();
+            networkTurnEntity.handleInput(input, this);
+        } else {
+            throw new IllegalStateException();
         }
-        else if (getEntityTwo() instanceof NetworkTurnEntity) {
-            NetworkTurnEntity networkTurnEntity =(NetworkTurnEntity) getEntityOne();
-            networkTurnEntity.handleInput(input);
-            networkTurnEntity.takeTurn(this);
-        }
+    }
+
+    @Override
+    public void doTurn(int x, int y) {
+        super.doTurn(x, y);
+
+        int width = getGameBoard().getSize();
+        int move = (width * y) + x;
+        NetworkSingleton.getNetworkInstance().sendCommand(Command.MOVE, String.valueOf(move));
     }
 }

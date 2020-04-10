@@ -20,16 +20,17 @@ public class InputHandler implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
-            try {
-                String input = reader.readLine();
-                System.out.println(input);
+        String input;
+
+        try {
+            while(!Thread.interrupted() && (input = reader.readLine()) != null) {
                 for (InputListener inputListener: inputListeners) {
                     inputListener.handleInput(input);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -40,7 +41,7 @@ public class InputHandler implements Runnable {
     private class DebugHandler implements InputListener {
         @Override
         public void handleInput(String input) {
-            System.out.println("RECEIVED: " + input);
+            System.out.println("NETWORK RECEIVED: " + input);
         }
     }
 }

@@ -19,7 +19,8 @@ public enum Command {
     }
 
     public static void sendCommand(Connection connection, Command command, String argument) {
-        System.out.println("DEBUG_SEND: " + command + " Arg: " + argument);
+        System.out.println("NETWORK SEND: " + command + " Arg: " + argument);
+
         switch (command) {
             case LOGIN:
                 connection.send("login " + argument);

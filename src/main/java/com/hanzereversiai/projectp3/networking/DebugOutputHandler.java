@@ -15,9 +15,9 @@ public class DebugOutputHandler implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
-            String input = scanner.nextLine();
-            System.out.println("SEND: " + input);
+        String input;
+
+        while(!Thread.interrupted() && (input = scanner.nextLine()) != null) {
             writer.println(input);
         }
     }

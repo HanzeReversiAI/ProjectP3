@@ -11,12 +11,22 @@ import java.io.IOException;
 
 public class UIHelper {
     public static FXMLLoader switchScene(ActionEvent actionEvent, String fxml) {
+        return switchScene(((Node)actionEvent.getSource()).getScene(), fxml);
+    }
+
+    public static FXMLLoader switchScene(Scene scene, String fxml) {
         try {
+            double width = scene.getWidth();
+            double height = scene.getHeight();
+
             FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("/" + fxml + ".fxml"));
             Parent lobbyPanelParent = loader.load();
-            Scene lobbyPanelScene = new Scene(lobbyPanelParent);
+            Scene lobbyPanelScene = new Scene(lobbyPanelParent, width, height);
 
-            Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+            Stage stage = (Stage) scene.getWindow();
+
+            System.out.println(stage);
+            System.out.println(lobbyPanelParent);
             stage.setScene(lobbyPanelScene);
             stage.show();
 

@@ -7,10 +7,6 @@
     -fx-effect: dropshadow(three-pass-box, #2b303b, 30, 0, 0, 0);
 }
 
-#navigation {
-    -fx-background-color: rgba(0, 0, 0, 0.1);
-}
-
 .content {
     -fx-padding: 20px;
 }

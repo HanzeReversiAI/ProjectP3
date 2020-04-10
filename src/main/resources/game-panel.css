@@ -1,0 +1,8 @@
+#background {
+    -fx-background-color: linear-gradient(to bottom right, rgb(74, 74, 74), rgb(57, 57, 57));
+}
+
+#end-message-label {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+}

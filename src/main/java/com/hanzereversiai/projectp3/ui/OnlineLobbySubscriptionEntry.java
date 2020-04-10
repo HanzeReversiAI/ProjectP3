@@ -23,7 +23,7 @@ public class OnlineLobbySubscriptionEntry {
         if (subUnsubButton.getText().equals("Subscribe")) {
             setStatusLabel("Subscribed");
             subUnsubButton.setVisible(false);
-            NetworkSingleton.getNetworkInstance().SendCommand(Command.SUBSCRIBE, gameNameLabel.getText());
+            NetworkSingleton.getNetworkInstance().sendCommand(Command.SUBSCRIBE, gameNameLabel.getText());
         }
     }
 }

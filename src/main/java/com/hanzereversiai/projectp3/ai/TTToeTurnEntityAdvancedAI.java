@@ -1,42 +1,44 @@
-package com.hanzereversiai.projectp3.TTToeTurnAI;
+package com.hanzereversiai.projectp3.ai;
 
 import com.thowv.javafxgridgameboard.*;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeAlgorithms;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
-public class TTToeAdvancedAI extends AbstractTurnEntity {
-    public TTToeAdvancedAI() {
-        super(EntityType.AI);
+public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
+    public TTToeTurnEntityAdvancedAI(String name) {
+        super(EntityType.AI, name);
     }
 
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
         GameBoardTile best = findBestMove(gameInstance);
-        System.out.print(best.getXCord());
-        System.out.println(best.getYCord());
-        gameInstance.doTurn(best.getXCord(),best.getYCord());
+
+        // Prevent the AI from going too fast, instead, visualize the moves
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(1000));
+        pauseTransition.setOnFinished((e) -> gameInstance.doTurn(best.getXCord(),best.getYCord()));
+        pauseTransition.play();
     }
 
     // This function returns true if there are moves remaining on the board. It returns false if there are no moves left to play.
-    static Boolean isMovesLeft(AbstractGameInstance gameInstance)
-    {
+    static Boolean hasMovesLeft(AbstractGameInstance gameInstance) {
         return gameInstance.getGameBoard().getTilesByType(GameBoardTileType.HIDDEN).size() > 0;
     }
 
     // This is an evaluation function
     static int evaluate(GameBoard gameBoard, GameBoardTileType gameBoardTileType) {
-        if (TTToeAlgorithms.checkThreeInRow(gameBoard) == gameBoardTileType) {
+        if (TTToeAlgorithms.checkThreeInRow(gameBoard) == gameBoardTileType)
             return +10;
-        }
-        else if (TTToeAlgorithms.checkThreeInRow(gameBoard) == AlgorithmHelper.flipTileType(gameBoardTileType)) {
+        else if (TTToeAlgorithms.checkThreeInRow(gameBoard) == AlgorithmHelper.flipTileType(gameBoardTileType))
             return -10;
-        }
-        else return 0;
+        else
+            return 0;
     }
 
     //minMax func
-    static int minMax(AbstractGameInstance gameInstance, int depth, Boolean isMax)
-    {
+    static int minMax(AbstractGameInstance gameInstance, int depth, Boolean isMax) {
         int score = evaluate(gameInstance.getGameBoard(), gameInstance.getCurrentTurnEntity().getGameBoardTileType());
+
         //predict max wins
         if (score == 10)
             return score;
@@ -44,7 +46,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
         if (score == -10)
             return score;
         // predicts no winner = a tie
-        if (!isMovesLeft(gameInstance))
+        if (!hasMovesLeft(gameInstance))
             return 0;
 
         // If this maximizer's move
@@ -65,6 +67,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                     }
                 }
             }
+
             return best;
         }
 
@@ -87,13 +90,13 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                         gameInstance.getGameBoard().setTileType(i,j,GameBoardTileType.HIDDEN);                    }
                 }
             }
+
             return best;
         }
     }
 
     // This will return the best possible move for the AI
-    static GameBoardTile findBestMove(AbstractGameInstance gameInstance)
-    {
+    static GameBoardTile findBestMove(AbstractGameInstance gameInstance) {
         int bestVal = -1000;
         int bestMoveX = -1;
         int bestMoveY = -1;
@@ -122,6 +125,7 @@ public class TTToeAdvancedAI extends AbstractTurnEntity {
                 }
             }
         }
+
         return (gameInstance.getGameBoard().getTile(bestMoveX,bestMoveY));
     }
 }

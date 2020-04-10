@@ -4,8 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<SplitPane dividerPositions="0.5" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.OnlineLobbyController">
+<SplitPane fx:id="lobbyPanelRoot" dividerPositions="0.5" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.OnlineLobbyPanelController">
    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
       <Pane prefHeight="33.0" prefWidth="346.0">
          <Label layoutX="150.0" layoutY="4.0" text="Players">
@@ -14,7 +14,7 @@
             </font>
          </Label>
          <Button fx:id="refreshPlayerListButton" contentDisplay="BOTTOM" layoutX="4.0" layoutY="2.0"
-                 mnemonicParsing="false" onAction="#onRefreshPlayerListButton" text="Refresh"/>
+                 mnemonicParsing="false" onAction="#onRefreshPlayerListButtonActivated" text="Refresh"/>
       </Pane>
       <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0"
                   VBox.vgrow="ALWAYS">
