@@ -1,5 +1,6 @@
 package com.hanzereversiai.projectp3.ui;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -25,13 +26,17 @@ public class UIHelper {
 
             Stage stage = (Stage) scene.getWindow();
 
-            System.out.println(stage);
-            System.out.println(lobbyPanelParent);
-            stage.setScene(lobbyPanelScene);
-            stage.show();
+            System.out.println("Stage: " + stage);
+            System.out.println("LobbyPanelParent: " + lobbyPanelParent);
+
+            Platform.runLater(() -> {
+                stage.setScene(lobbyPanelScene);
+                stage.show();
+            });
 
             return loader;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             return null;
         }
     }
