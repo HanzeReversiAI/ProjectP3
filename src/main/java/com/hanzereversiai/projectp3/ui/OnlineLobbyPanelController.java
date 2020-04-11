@@ -1,29 +1,16 @@
 package com.hanzereversiai.projectp3.ui;
 
 import com.hanzereversiai.projectp3.networking.Command;
-import com.hanzereversiai.projectp3.networking.EventHandlerHelper;
 import com.hanzereversiai.projectp3.networking.Network;
 import com.hanzereversiai.projectp3.networking.NetworkSingleton;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class OnlineLobbyPanelController {
 
-    private final static Pattern listPattern = Pattern.compile("\"(.*?)\"[,\\]]");
-
-    private ArrayList<String> challenges;
 
     public SplitPane lobbyPanelRoot;
     public VBox playerList;
@@ -32,101 +19,24 @@ public class OnlineLobbyPanelController {
 
     @FXML
     public void initialize() {
-        challenges = new ArrayList<>();
         playerList.getChildren().clear();
         subscriptionList.getChildren().clear();
 
-        subscribeAll(NetworkSingleton.getNetworkInstance());
-    }
+        Network network = NetworkSingleton.getNetworkInstance();
 
-    public void handleInputPlayers(String input) {
-        clearPlayerList();
+        network.getNetworkHandler().setRootUIObject(lobbyPanelRoot);
+        network.getOnlineLobbyPanelNetworkHandler().setOnlineLobbyPanelController(this);
 
-        Matcher matcher = listPattern.matcher(input);
-        String username = NetworkSingleton.getNetworkInstance().getUsername();
-
-        while(matcher.find()) {
-            try {
-                if (! matcher.group(1).equals(username)) {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + "online-lobby-player-entry" + ".fxml"));
-                    Parent player = loader.load();
-                    OnlineLobbyPlayerEntryController controller = loader.getController();
-                    BorderPane borderPane = (BorderPane) player;
-
-                    String opponent = matcher.group(1);
-
-                    for (String item : challenges) {
-                        MenuItem menuItem = new MenuItem(item);
-                        menuItem.setOnAction(e -> controller.onChallengeAcceptMenuButtonActivated(e, item, opponent));
-                        controller.addChallengeOptions(menuItem);
-                    }
-
-                    Platform.runLater(
-                            () -> playerList.getChildren().add(borderPane)
-                    );
-
-                    controller.setPlayerName(opponent);
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void handleInputSubscriptions(String input) {
-        clearPlayerList();
-
-        challenges = new ArrayList<>();
-        Matcher matcher = listPattern.matcher(input);
-
-        while(matcher.find()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + "online-lobby-subscription-entry" + ".fxml"));
-                Parent subscription = loader.load();
-                OnlineLobbySubscriptionEntry controller = loader.getController();
-                BorderPane borderPane = (BorderPane) subscription;
-
-                Platform.runLater(
-                        () -> subscriptionList.getChildren().add(borderPane)
-                );
-
-                controller.setGameName(matcher.group(1));
-                challenges.add(matcher.group(1));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void handleMatch(String input) {
-        unsubscribeAll(NetworkSingleton.getNetworkInstance());
-        EventHandlerHelper.handleMatch(input, lobbyPanelRoot);
+        network.sendCommand(Command.GET_GAMELIST);
+        network.sendCommand(Command.GET_PLAYERLIST);
     }
 
     public void onRefreshPlayerListButtonActivated(ActionEvent actionEvent) {
         NetworkSingleton.getNetworkInstance().sendCommand(Command.GET_PLAYERLIST);
     }
 
-    private void clearPlayerList() {
-        // Avoiding a IllegalStateException by telling the program to update the UI in the JavaFX thread
-        Platform.runLater(
-                () -> playerList.getChildren().clear()
-        );
-    }
 
-    private void subscribeAll(Network network) {
-        network.getDelegateInputListener().SUBSCRIBE_PLAYERLIST(this::handleInputPlayers, this.hashCode());
-        network.getDelegateInputListener().SUBSCRIBE_GAMELIST(this::handleInputSubscriptions, this.hashCode());
-        network.getDelegateInputListener().SUBSCRIBE_MATCH(this::handleMatch, this.hashCode());
 
-        network.sendCommand(Command.GET_GAMELIST);
-        network.sendCommand(Command.GET_PLAYERLIST);
-    }
 
-    private void unsubscribeAll(Network network) {
-        network.getDelegateInputListener().UNSUBSCRIBE_PLAYERLIST(this.hashCode());
-        network.getDelegateInputListener().UNSUBSCRIBE_GAMELIST(this.hashCode());
-        network.getDelegateInputListener().UNSUBSCRIBE_MATCH(this.hashCode());
-    }
+
 }

@@ -1,8 +1,6 @@
 package com.hanzereversiai.projectp3.networking;
 
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DelegateInputListener implements InputListener {
 
@@ -14,6 +12,7 @@ public class DelegateInputListener implements InputListener {
     private DelegateInputListenerListener gameYourTurn_inputListener;
     private DelegateInputListenerListener gameWIN_inputListener;
     private DelegateInputListenerListener gameLOSS_inputListener;
+    private DelegateInputListenerListener gameDRAW_inputListener;
 
 
     public DelegateInputListener(Network network) {
@@ -27,6 +26,7 @@ public class DelegateInputListener implements InputListener {
         gameYourTurn_inputListener = new DelegateInputListenerListener();
         gameWIN_inputListener = new DelegateInputListenerListener();
         gameLOSS_inputListener = new DelegateInputListenerListener();
+        gameDRAW_inputListener = new DelegateInputListenerListener();
     }
 
     @Override
@@ -47,6 +47,8 @@ public class DelegateInputListener implements InputListener {
             gameWIN_inputListener.handleInput(input);
         } else if (input.startsWith("SVR GAME LOSS")) {
             gameLOSS_inputListener.handleInput(input);
+        } else if (input.startsWith("SVR GAME DRAW")) {
+            gameDRAW_inputListener.handleInput(input);
         }
     }
 
@@ -104,6 +106,13 @@ public class DelegateInputListener implements InputListener {
     }
     public void UNSUBSCRIBE_LOSS(int hash) {
         gameLOSS_inputListener.unsubscribe(hash);
+    }
+
+    public void SUBSCRIBE_DRAW(InputListener inputListener, int hash) {
+        gameDRAW_inputListener.subscribe(inputListener, hash);
+    }
+    public void UNSUBSCRIBE_DRAW(int hash) {
+        gameDRAW_inputListener.unsubscribe(hash);
     }
 
 

@@ -1,6 +1,5 @@
 package com.hanzereversiai.projectp3.ui;
 
-import com.hanzereversiai.projectp3.networking.EventHandlerHelper;
 import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
@@ -81,14 +80,8 @@ public class GamePanelController {
             endLabel.setId("end-message-label");
             centerStackPane.getChildren().add(endLabel);
 
-            NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_MATCH(
-                    this::handleMatch, this.hashCode());
+            NetworkSingleton.getNetworkInstance().getNetworkHandler().setRootUIObject(centerStackPane);
         });
-    }
-
-    private void handleMatch(String input) {
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().UNSUBSCRIBE_MATCH(this.hashCode());
-        EventHandlerHelper.handleMatch(input, centerStackPane);
     }
 
     private void enableBackButton() {
