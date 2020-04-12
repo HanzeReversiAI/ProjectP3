@@ -8,10 +8,10 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+//import java.util.HashMap;
+//import java.util.concurrent.ExecutorService;
+//import java.util.concurrent.Executors;
+//import java.util.concurrent.TimeUnit;
 
 public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 
@@ -30,7 +30,7 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 
     private void takeTurn(ReversiGameInstance gameInstance) {
         ArrayList<GameBoardTile> possibleGameBoardTiles = ReversiAlgorithms.determineTilePossibilities(
-                gameInstance.getGameBoard(), getGameBoardTileType());
+                gameInstance.getGameBoard().getAllTiles(), getGameBoardTileType());
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
 
         if (possibleGameBoardTiles.size() != 0) {
@@ -51,7 +51,7 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
     {
         GameBoardTile bestMove = this.findBestMove(gameInstance, possibleMoves);
 
-//        gameInstance.doTurn(bestMove.getXCord(), bestMove.getYCord());
+        gameInstance.doTurn(bestMove.getXCord(), bestMove.getYCord());
     }
 
     private GameBoardTile findBestMove(ReversiGameInstance gameInstance, ArrayList<GameBoardTile> possibleMoves)
@@ -63,31 +63,18 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 //        HashMap<GameBoardTile, Integer> moveScores = new HashMap<>();
 
         for(GameBoardTile possibleMove : possibleMoves){
-            GameBoard copiedGameBoard = this.copyGameBoard(gameInstance.getGameBoard());
-            System.out.println(copiedGameBoard);
-            System.out.println("current amount for " + currentTileType.toString() + ": " +copiedGameBoard.countTilesByType(currentTileType));
-            System.out.println("current amount for " + AlgorithmHelper.flipTileType(currentTileType).toString() + ": " +copiedGameBoard.countTilesByType(AlgorithmHelper.flipTileType(currentTileType)));
-            System.out.println(gameInstance.getGameBoard());
-            System.out.println("current amount for " + currentTileType.toString() + ": " +gameInstance.getGameBoard().countTilesByType(currentTileType));
-            System.out.println("current amount for " + AlgorithmHelper.flipTileType(currentTileType).toString() + ": " +gameInstance.getGameBoard().countTilesByType(AlgorithmHelper.flipTileType(currentTileType)));
+            GameBoardTile[][] gameBoardTiles = gameInstance.getGameBoard().getAllTiles();
 
-            copiedGameBoard.setTileType(possibleMove.getXCord(), possibleMove.getYCord(), currentTileType);
+            GameBoardTileType[][] resetArray = this.getResetArray(gameBoardTiles);
 
-            System.out.println(copiedGameBoard);
-            System.out.println("after move amount for " + currentTileType.toString() + ": " +copiedGameBoard.countTilesByType(currentTileType));
-            System.out.println("after move amount for " + AlgorithmHelper.flipTileType(currentTileType).toString() + ": " +copiedGameBoard.countTilesByType(AlgorithmHelper.flipTileType(currentTileType)));
-            System.out.println(gameInstance.getGameBoard());
-            System.out.println("after move amount for " + currentTileType.toString() + ": " +gameInstance.getGameBoard().countTilesByType(currentTileType));
-            System.out.println("after move amount for " + AlgorithmHelper.flipTileType(currentTileType).toString() + ": " +gameInstance.getGameBoard().countTilesByType(AlgorithmHelper.flipTileType(currentTileType)));
+            int moveScore = getScoreAfterMove(gameBoardTiles, possibleMove, currentTileType);
+            moveScore += getNextMoveScore(gameBoardTiles, 5, 0, false, AlgorithmHelper.flipTileType(currentTileType));
+            this.resetBoardTo(gameBoardTiles, resetArray);
 
-//            int moveScore = getScoreAfterMove(copiedGameBoard, possibleMove, currentTileType);
-//            moveScore += getNextMoveScore(copiedGameBoard, 5, 0, false, AlgorithmHelper.flipTileType(currentTileType));
-//            copiedGameBoard.setTileType(possibleMove.getXCord(), possibleMove.getYCord(), GameBoardTileType.HIDDEN);
-
-//            if(moveScore > bestScoreYet){
-//                bestTileYet = possibleMove;
-//                bestScoreYet = moveScore;
-//            }
+            if(moveScore > bestScoreYet){
+                bestTileYet = possibleMove;
+                bestScoreYet = moveScore;
+            }
         }
 
         // TODO: fix threading issues, board seems to be shared among threads
@@ -131,13 +118,13 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         return bestTileYet;
     }
 
-    private int getNextMoveScore(GameBoard gameBoard, int nOfMovesAhead, int nOfMovesProcessed, boolean aiTurn, GameBoardTileType currentTileType){
-        ArrayList<GameBoardTile> possibleMoves = ReversiAlgorithms.determineTilePossibilities(gameBoard, currentTileType);
+    private int getNextMoveScore(GameBoardTile[][] gameBoardTiles, int nOfMovesAhead, int nOfMovesProcessed, boolean aiTurn, GameBoardTileType currentTileType){
+        ArrayList<GameBoardTile> possibleMoves = ReversiAlgorithms.determineTilePossibilities(gameBoardTiles, currentTileType);
 
         // If final move
-        if(gameBoard.countTilesByType(GameBoardTileType.HIDDEN) <= 1){
-            int currentPlayerTiles = gameBoard.countTilesByType(currentTileType);
-            int opponentTiles = gameBoard.countTilesByType(AlgorithmHelper.flipTileType(currentTileType));
+        if(this.isFinalMove(gameBoardTiles)){
+            int currentPlayerTiles = this.getNOfTilesByType(gameBoardTiles, currentTileType);
+            int opponentTiles = this.getNOfTilesByType(gameBoardTiles, AlgorithmHelper.flipTileType(currentTileType));
 
             if(currentPlayerTiles > opponentTiles){
                 // Current player wins
@@ -163,9 +150,11 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         }
 
         for(GameBoardTile possibleMove : possibleMoves){
-            int moveScore = this.getScoreAfterMove(gameBoard, possibleMove, currentTileType);
-            int nextMoveScore = this.getNextMoveScore(gameBoard, nOfMovesAhead, ++nOfMovesProcessed, !aiTurn, AlgorithmHelper.flipTileType(currentTileType));
-            gameBoard.setTileType(possibleMove.getXCord(), possibleMove.getYCord(), GameBoardTileType.HIDDEN);
+            GameBoardTileType[][] resetArray = this.getResetArray(gameBoardTiles);
+
+            int moveScore = this.getScoreAfterMove(gameBoardTiles, possibleMove, currentTileType);
+            int nextMoveScore = this.getNextMoveScore(gameBoardTiles, nOfMovesAhead, ++nOfMovesProcessed, !aiTurn, AlgorithmHelper.flipTileType(currentTileType));
+            this.resetBoardTo(gameBoardTiles, resetArray);
 
             if(!aiTurn){
                 moveScore *= -1;
@@ -183,29 +172,28 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         return bestScoreYet;
     }
 
-    private int getScoreAfterMove(GameBoard gameBoard, GameBoardTile move, GameBoardTileType currentTileType)
+    private int getScoreAfterMove(GameBoardTile[][] gameBoardTiles, GameBoardTile move, GameBoardTileType currentTileType)
     {
-        int scoreOldBoard = this.evaluateBoard(gameBoard, currentTileType);
-        gameBoard.setTileType(move.getXCord(), move.getYCord(), currentTileType);
-        // TODO: also flip tiles after move
-//        ReversiAlgorithms.flipTilesFromOrigin(gameBoard, currentTileType, move.getXCord(), move.getYCord());
-        int scoreNewBoard = this.evaluateBoard(gameBoard, currentTileType);
+        int scoreOldBoard = this.evaluateBoard(gameBoardTiles, currentTileType);
+        gameBoardTiles[move.getXCord()][move.getYCord()].setGameBoardTileType(currentTileType);
+        ReversiAlgorithms.flipTilesFromOrigin(gameBoardTiles, move.getXCord(), move.getYCord());
+        int scoreNewBoard = this.evaluateBoard(gameBoardTiles, currentTileType);
 
         return scoreNewBoard - scoreOldBoard;
     }
 
-    private int evaluateBoard(GameBoard gameBoard, GameBoardTileType currentTileType)
+    private int evaluateBoard(GameBoardTile[][] gameBoardTiles, GameBoardTileType currentTileType)
     {
-        ArrayList<GameBoardTile> tilesCurrentTurnEntity = gameBoard.getTilesByType(currentTileType);
-        ArrayList<GameBoardTile> tilesOpponentTurnEntity = gameBoard.getTilesByType(AlgorithmHelper.flipTileType(currentTileType));
         int scoreCurrentMinusOpponent = 0;
 
-        for(GameBoardTile tile : tilesCurrentTurnEntity){
-            scoreCurrentMinusOpponent += this.tileWeights[tile.getYCord()][tile.getXCord()];
-        }
-
-        for(GameBoardTile tile : tilesOpponentTurnEntity){
-            scoreCurrentMinusOpponent -= this.tileWeights[tile.getYCord()][tile.getXCord()];
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                if(gameBoardTiles[x][y].getGameBoardTileType() == currentTileType){
+                    scoreCurrentMinusOpponent += this.tileWeights[x][y];
+                } else {
+                    scoreCurrentMinusOpponent -= this.tileWeights[x][y];
+                }
+            }
         }
 
         return scoreCurrentMinusOpponent;
@@ -229,20 +217,62 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         this.tileWeights = weights;
     }
 
-    private GameBoard copyGameBoard(GameBoard gameBoard)
+    private GameBoardTileType[][] getResetArray(GameBoardTile[][] gameBoardTiles)
     {
-        int size = gameBoard.getSize();
-        GameBoard newGameBoard = new GameBoard(size);
-        GameBoardTile[][] tiles = new GameBoardTile[size][size];
+        GameBoardTileType[][] resetArray = new GameBoardTileType[8][8];
 
-        for(int i = 0; i < size; i++){
-            for(int j = 0; j < size; j++){
-                tiles[i][j] = gameBoard.getTile(i, j);
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+
+                // Manually setting them will ensure it is not the same object. Using the code in the next line will cause errors.
+                // resetArray[x][y] = gameBoardTiles[x][y].getGameBoardTileType()
+
+                if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.HIDDEN){
+                    resetArray[x][y] = GameBoardTileType.HIDDEN;
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.VISIBLE){
+                    resetArray[x][y] = GameBoardTileType.VISIBLE;
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.INTERACTABLE){
+                    resetArray[x][y] = GameBoardTileType.INTERACTABLE;
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.PLAYER_1){
+                    resetArray[x][y] = GameBoardTileType.PLAYER_1;
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.PLAYER_2){
+                    resetArray[x][y] = GameBoardTileType.PLAYER_2;
+                }
             }
         }
 
-        newGameBoard.getGameBoardBehavior().setGameBoardTiles(tiles);
+        return resetArray;
+    }
 
-        return newGameBoard;
+    private void resetBoardTo(GameBoardTile[][] gameBoardTiles, GameBoardTileType[][] resetArray)
+    {
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                gameBoardTiles[x][y].setGameBoardTileType(resetArray[x][y]);
+            }
+        }
+    }
+
+    private boolean isFinalMove(GameBoardTile[][] gameBoardTiles)
+    {
+        int nOfPlayerOccupiedTiles = this.getNOfTilesByType(gameBoardTiles, GameBoardTileType.PLAYER_1);
+        nOfPlayerOccupiedTiles += this.getNOfTilesByType(gameBoardTiles, GameBoardTileType.PLAYER_2);
+
+        return nOfPlayerOccupiedTiles <= 1;
+    }
+
+    private int getNOfTilesByType(GameBoardTile[][] gameBoardTiles, GameBoardTileType gameBoardTileType)
+    {
+        int n = 0;
+
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                if(gameBoardTiles[x][y].getGameBoardTileType() == gameBoardTileType){
+                    n++;
+                }
+            }
+        }
+
+        return n;
     }
 }

@@ -27,9 +27,9 @@ public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
 
     // This is an evaluation function
     static int evaluate(GameBoard gameBoard, GameBoardTileType gameBoardTileType) {
-        if (TTToeAlgorithms.checkThreeInRow(gameBoard) == gameBoardTileType)
+        if (TTToeAlgorithms.checkThreeInRow(gameBoard.getAllTiles()) == gameBoardTileType)
             return +10;
-        else if (TTToeAlgorithms.checkThreeInRow(gameBoard) == AlgorithmHelper.flipTileType(gameBoardTileType))
+        else if (TTToeAlgorithms.checkThreeInRow(gameBoard.getAllTiles()) == AlgorithmHelper.flipTileType(gameBoardTileType))
             return -10;
         else
             return 0;
