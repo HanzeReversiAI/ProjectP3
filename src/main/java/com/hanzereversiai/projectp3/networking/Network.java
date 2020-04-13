@@ -12,9 +12,12 @@ public class Network {
 
     public String hostname;
     public int port;
-    private String username;
     public int timeout;
     private boolean isConnected;
+
+    // User data
+    private String username;
+    private int aiDepthAmount = 5;
 
     private Connection connection;
     private DelegateInputListener delegateInputListener;
@@ -93,6 +96,14 @@ public class Network {
 
     public String getUsername() {
         return username;
+    }
+
+    public int getAiDepthAmount() {
+        return aiDepthAmount;
+    }
+
+    public void setAiDepthAmount(int aiDepthAmount) {
+        this.aiDepthAmount = aiDepthAmount;
     }
 
     public boolean isConnected() {

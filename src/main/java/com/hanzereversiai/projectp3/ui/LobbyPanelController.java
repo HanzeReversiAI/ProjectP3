@@ -11,36 +11,58 @@ import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 
+/**
+ * @author Thomas
+ */
 public class LobbyPanelController {
-    Parent offlineLobbyPane;
-    Parent onlineLobbyPane;
+    Parent offlineLobbyPanel;
+    Parent onlineLobbyPanel;
 
     public Button onlineButton;
     public Button offlineButton;
     public StackPane contentStackPane;
     public Label welcomeLabel;
 
+    /**
+     * Set the welcome label and load the UI components.
+     */
     @FXML
     public void initialize() {
         welcomeLabel.setText("Welcome back " + NetworkSingleton.getNetworkInstance().getUsername());
-        offlineLobbyPane = loadUI("offline-lobby-panel");
 
+        // Load offline UI
+        offlineLobbyPanel = loadUI("offline-lobby-panel");
+
+        // Load online UI
         if (NetworkSingleton.getNetworkInstance().isConnected())
-            onlineLobbyPane = loadUI("online-lobby-panel");
+            onlineLobbyPanel = loadUI("online-lobby-panel");
     }
 
+    /**
+     * Switch the content panel to the online content.
+     * @param actionEvent The event that fired this method
+     */
     public void onOnlineButtonActivated(ActionEvent actionEvent) {
-        if (onlineLobbyPane != null)
-            switchContentStackPaneContent(onlineLobbyPane);
+        if (onlineLobbyPanel != null)
+            switchContentStackPaneContent(onlineLobbyPanel);
         else
             UIHelper.switchScene(actionEvent, "connection-panel");
     }
 
+    /**
+     * Switch the content panel to the offline content.
+     * @param actionEvent The event that fired this method
+     */
     public void onOfflineButtonActivated(ActionEvent actionEvent) {
-        if (offlineLobbyPane != null)
-            switchContentStackPaneContent(offlineLobbyPane);
+        if (offlineLobbyPanel != null)
+            switchContentStackPaneContent(offlineLobbyPanel);
     }
 
+    /**
+     * Switch the content of the content stack pane by loading the given fxml.
+     * @param ui The fxml that has to be loaded
+     * @return The parent object created from the fxml
+     */
     private Parent loadUI(String ui) {
         try {
             Parent content = new FXMLLoader(getClass().getResource("/" + ui + ".fxml")).load();
@@ -51,6 +73,10 @@ public class LobbyPanelController {
         }
     }
 
+    /**
+     * Switch the content presented in the content stack pane.
+     * @param content The content to be displayed
+     */
     private void switchContentStackPaneContent(Parent content) {
         contentStackPane.getChildren().clear();
         contentStackPane.getChildren().add(content);
