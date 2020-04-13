@@ -63,12 +63,18 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
 
         if (possibleGameBoardTiles.size() != 0) {
+
+            // Has at least one possible move
+
             gameInstance.getGameBoard().setTileTypes(possibleGameBoardTiles,
                     GameBoardTileType.VISIBLE);
 
             pauseTransition.setOnFinished(e -> this.doBestMove(gameInstance, possibleGameBoardTiles));
         }
         else{
+
+            // Has no possible moves
+
             pauseTransition.setOnFinished(e -> gameInstance.passTurn());
             System.out.println("Passed turn");
         }
@@ -105,12 +111,19 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         for(GameBoardTile possibleMove : possibleMoves){
             GameBoardTile[][] gameBoardTiles = gameInstance.getGameBoard().getAllTiles();
 
+            // Get the current board contents as a copy so we can undo the performed move later
             GameBoardTileType[][] resetArray = this.getResetArray(gameBoardTiles);
 
+            // Calculate the score after this possible move
             int moveScore = getScoreAfterMove(gameBoardTiles, possibleMove, currentTileType);
-            moveScore += getNextMoveScore(gameBoardTiles, this.nOfMovesAhead, 0, false, AlgorithmHelper.flipTileType(currentTileType));
+
+            // Calculate the most realistic score after (this.nOfMovesAhead) moves have been performed and add it to the current move score
+            moveScore += getNextMoveScore(gameBoardTiles, 0, false, AlgorithmHelper.flipTileType(currentTileType));
+
+            // Undo the performed move
             this.resetBoardTo(gameBoardTiles, resetArray);
 
+            // If the score is better than the previous best score, update the best tile and best score
             if(moveScore > bestScoreYet){
                 bestTileYet = possibleMove;
                 bestScoreYet = moveScore;
@@ -124,13 +137,12 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
      * Recursively calculates the obtained score after performing each possible move.
      *
      * @param gameBoardTiles 2d array of current board contents
-     * @param nOfMovesAhead number of moves to calculate
      * @param nOfMovesProcessed number of moves already processed
      * @param aiTurn if it's the AI's or not
      * @param currentTileType tile type of the current player
      * @return best possible score of out of all possible moves
      */
-    private int getNextMoveScore(GameBoardTile[][] gameBoardTiles, int nOfMovesAhead, int nOfMovesProcessed, boolean aiTurn, GameBoardTileType currentTileType){
+    private int getNextMoveScore(GameBoardTile[][] gameBoardTiles, int nOfMovesProcessed, boolean aiTurn, GameBoardTileType currentTileType){
         ArrayList<GameBoardTile> possibleMoves = ReversiAlgorithms.determineTilePossibilities(gameBoardTiles, currentTileType);
 
         // If final move
@@ -138,6 +150,7 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
             int currentPlayerTiles = this.getNOfTilesByType(gameBoardTiles, currentTileType);
             int opponentTiles = this.getNOfTilesByType(gameBoardTiles, AlgorithmHelper.flipTileType(currentTileType));
 
+            // If the current player has more tiles than the opponent
             if(currentPlayerTiles > opponentTiles){
                 // Current player wins
                 return 1000;
@@ -150,7 +163,8 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
             }
         }
 
-        if(nOfMovesProcessed > nOfMovesAhead || possibleMoves.size() <= 0){
+        // If more than (this.nOfMovesAhead) have been processed or there are no possible moves, then stop
+        if(nOfMovesProcessed > this.nOfMovesAhead || possibleMoves.size() <= 0){
             return 0;
         }
 
@@ -162,12 +176,20 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         }
 
         for(GameBoardTile possibleMove : possibleMoves){
+
+            // Get the current board contents as a copy so we can undo the performed move later
             GameBoardTileType[][] resetArray = this.getResetArray(gameBoardTiles);
 
+            // Calculate the score after this possible move
             int moveScore = this.getScoreAfterMove(gameBoardTiles, possibleMove, currentTileType);
-            int nextMoveScore = this.getNextMoveScore(gameBoardTiles, nOfMovesAhead, ++nOfMovesProcessed, !aiTurn, AlgorithmHelper.flipTileType(currentTileType));
+
+            // Calculate the most realistic score after (this.nOfMovesAhead) moves have been performed and add it to the current move score
+            int nextMoveScore = this.getNextMoveScore(gameBoardTiles, ++nOfMovesProcessed, !aiTurn, AlgorithmHelper.flipTileType(currentTileType));
+
+            // Undo the performed move
             this.resetBoardTo(gameBoardTiles, resetArray);
 
+            // If it's not the AI's turn, flip the move score because that is what the AI loses instead of gains. If it is, flip the score of the next move
             if(!aiTurn){
                 moveScore *= -1;
             } else {
@@ -190,13 +212,18 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
      * @param gameBoardTiles 2d array of current board contents
      * @param move move to perform
      * @param currentTileType tile type of the current player
-     * @return score after move.
+     * @return net score of move
      */
     private int getScoreAfterMove(GameBoardTile[][] gameBoardTiles, GameBoardTile move, GameBoardTileType currentTileType)
     {
+        // Get the score of the current board
         int scoreOldBoard = this.evaluateBoard(gameBoardTiles, currentTileType);
+
+        // Perform the specified move
         gameBoardTiles[move.getXCord()][move.getYCord()].setGameBoardTileType(currentTileType);
         ReversiAlgorithms.flipTilesFromOrigin(gameBoardTiles, move.getXCord(), move.getYCord());
+
+        // Get the score of the board after the move has been performed
         int scoreNewBoard = this.evaluateBoard(gameBoardTiles, currentTileType);
 
         return scoreNewBoard - scoreOldBoard;
@@ -213,11 +240,18 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
     {
         int scoreCurrentMinusOpponent = 0;
 
+        // For every tile the board
         for(int x = 0; x < 8; x++){
             for(int y = 0; y < 8; y++){
                 if(gameBoardTiles[x][y].getGameBoardTileType() == currentTileType){
+
+                    // This tile belongs to the current player, so add it to the score
+
                     scoreCurrentMinusOpponent += this.tileWeights[x][y];
                 } else if(gameBoardTiles[x][y].getGameBoardTileType() == AlgorithmHelper.flipTileType(currentTileType)){
+
+                    // This tile belongs to the opponent, so subtract it from the score
+
                     scoreCurrentMinusOpponent -= this.tileWeights[x][y];
                 }
             }
