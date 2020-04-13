@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 /**
  * This class allows for sending network commands from a terminal
+ *
+ * @author Mike
  */
 public class DebugOutputHandler implements Runnable {
 

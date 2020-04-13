@@ -4,6 +4,8 @@ import java.io.IOException;
 
 /**
  * NetworkSingleton used by the UI to access the Network instance
+ *
+ * @author Mike
  */
 public class NetworkSingleton {
     private static Network networkInstance;

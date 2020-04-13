@@ -2,6 +2,8 @@ package com.hanzereversiai.projectp3.networking;
 
 /**
  * Enumerator used to send commands over the network
+ *
+ * @author Mike
  */
 public enum Command {
     LOGIN,

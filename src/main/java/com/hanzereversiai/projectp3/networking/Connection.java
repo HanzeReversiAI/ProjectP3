@@ -11,6 +11,8 @@ import java.net.Socket;
  * Connection class
  *
  * This class keeps track of a socket connection to the game server, and sets up in and output.
+ *
+ * @author Mike
  */
 public class Connection {
 

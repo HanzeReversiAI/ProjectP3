@@ -6,6 +6,8 @@ import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeGameInstance;
 
 /**
  * A Version of the TTToeGameInstance that supports playing against another opponent via the network
+ *
+ * @author Mike
  */
 public class NetworkedTicTacToeGameInstance extends TTToeGameInstance implements NetworkedGameInstance {
     /**

@@ -14,6 +14,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
+/**
+ * @author Thomas
+ */
 public class GamePanelController {
     private static final String TURN_LABEL_PREFIX = "Turn: ";
     private GameBoard gameBoard;
@@ -27,6 +30,11 @@ public class GamePanelController {
     public Pane playerOneColorPane;
     public Pane playerTwoColorPane;
 
+    /**
+     * Takes a game instance, renders the board included in the instance,
+     * subscribes to the events and starts the game instance.
+     * @param gameInstance The gameInstance used for operation
+     */
     public void setGameInstance(AbstractGameInstance gameInstance) {
         this.gameBoard = gameInstance.getGameBoard();
         centerStackPane.getChildren().clear();
@@ -38,11 +46,17 @@ public class GamePanelController {
         gameInstance.onGameEnd(new GameEndListener() {
             @Override
             public void onGameEnd(AbstractTurnEntity winningTurnEntity, AbstractTurnEntity losingTurnEntity) {
+                setPlayerInfo(winningTurnEntity);
+                setPlayerInfo(losingTurnEntity);
+
                 endGame(winningTurnEntity.getName() + " won!");
             }
 
             @Override
             public void onGameEnd(AbstractTurnEntity[] tieTurnEntities) {
+                setPlayerInfo(tieTurnEntities[0]);
+                setPlayerInfo(tieTurnEntities[1]);
+
                 endGame("It was a tie");
             }
         });
@@ -51,10 +65,20 @@ public class GamePanelController {
         Platform.runLater(gameInstance::start);
     }
 
+    // region Events
+    /**
+     * Return to the lobby screen
+     * @param actionEvent The event that fired this method
+     */
     public void onBackButtonActivated(ActionEvent actionEvent) {
         UIHelper.switchScene(actionEvent, "lobby-panel");
     }
 
+    /**
+     * Set the player information and the turn label text.
+     * @param currentTurnEntity The entity that has the current turn
+     * @param lastTurnEntity The entity that had the turn last time
+     */
     private void onTurnSwitch(AbstractTurnEntity currentTurnEntity, AbstractTurnEntity lastTurnEntity) {
         Platform.runLater(() -> {
             setTurnLabelText(currentTurnEntity.getName());
@@ -64,14 +88,24 @@ public class GamePanelController {
         });
     }
 
-    private void onGameStart(AbstractTurnEntity currentTurnEntity) {
+    /**
+     * Disable the back button and set the turn label text.
+     * @param turnEntity The entity that has to start first
+     */
+    private void onGameStart(AbstractTurnEntity turnEntity) {
         backButton.setDisable(true);
-        setTurnLabelText(currentTurnEntity.getName());
+        setTurnLabelText(turnEntity.getName());
     }
+    // endregion
 
+    /**
+     * Ends the current running game and displays a message with the results.
+     * @param endMessage The message displayed after ending the game
+     */
     private void endGame(String endMessage) {
         Platform.runLater(() -> {
-            enableBackButton();
+            backButton.setDisable(false);
+
             centerStackPane.getChildren().clear();
             setTurnLabelText("");
 
@@ -84,23 +118,28 @@ public class GamePanelController {
         });
     }
 
-    private void enableBackButton() {
-        backButton.setDisable(false);
-    }
-
     // region Getters and setters
+
+    /**
+     * Set the turn label text.
+     * @param text Text that the turn label has to display
+     */
     public void setTurnLabelText(String text) {
         turnLabel.setText(TURN_LABEL_PREFIX + text);
     }
 
-    public void setPlayerInfo(AbstractTurnEntity turnEntity) {
-        if (turnEntity.getGameBoardTileType() == GameBoardTileType.PLAYER_1) {
-            playerOneLabel.setText(turnEntity.getName() + ": " + turnEntity.getPoints());
-            playerOneColorPane.setStyle("-fx-background-color: " + turnEntity.getColor());
+    /**
+     * Set the player information such as name and points.
+     * @param entity The entity that the info has to be used from
+     */
+    public void setPlayerInfo(AbstractTurnEntity entity) {
+        if (entity.getGameBoardTileType() == GameBoardTileType.PLAYER_1) {
+            playerOneLabel.setText(entity.getName() + ": " + entity.getPoints());
+            playerOneColorPane.setStyle("-fx-background-color: " + entity.getColor());
         }
         else {
-            playerTwoLabel.setText(turnEntity.getPoints() + " :" + turnEntity.getName());
-            playerTwoColorPane.setStyle("-fx-background-color: " + turnEntity.getColor());
+            playerTwoLabel.setText(entity.getPoints() + " :" + entity.getName());
+            playerTwoColorPane.setStyle("-fx-background-color: " + entity.getColor());
         }
     }
     // endregion

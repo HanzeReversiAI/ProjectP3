@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 
 /**
  * Handles network commands for the OnlineLobbyPanel
+ *
+ * @author Mike
  */
 public class OnlineLobbyPanelNetworkHandler {
     // REGEX Patterns
@@ -177,8 +179,8 @@ public class OnlineLobbyPanelNetworkHandler {
     }
 
     /**
-     *
-     * @param onlineLobbyPlayerEntryController
+     * Add a OnlineLobbyPlayerEntryController that should be updated by the OnlineLobbyPanelNetworkHandler
+     * @param onlineLobbyPlayerEntryController onlineLobbyPlayerEntryController that should be updated by the OnlineLobbyPanelNetworkHandler
      */
     public void addOnlineLobbyPlayerEntryController(OnlineLobbyPlayerEntryController onlineLobbyPlayerEntryController) {
         onlineLobbyPlayerEntryControllers.add(onlineLobbyPlayerEntryController);

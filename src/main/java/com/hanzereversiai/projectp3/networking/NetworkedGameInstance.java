@@ -5,6 +5,8 @@ import com.thowv.javafxgridgameboard.GameBoard;
 
 /**
  * Interface used to support doing moves from the Network and to expose game logic functions to the network.
+ *
+ * @author Mike
  */
 public interface NetworkedGameInstance {
     void doTurnFromNetwork(int x, int y);

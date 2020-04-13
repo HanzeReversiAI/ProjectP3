@@ -9,6 +9,8 @@ import java.util.ArrayList;
  *
  * Other classes can subscribe to this class to be notified of ANY incoming command.
  * To only subscribe to a single command see DelegateInputHandler
+ *
+ * @author Mike
  */
 public class InputHandler implements Runnable {
 

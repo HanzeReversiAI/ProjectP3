@@ -1,86 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<SplitPane fx:id="lobbyPanelRoot" dividerPositions="0.5" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.OnlineLobbyPanelController">
-   <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
-      <Pane prefHeight="33.0" prefWidth="346.0">
-         <Label layoutX="150.0" layoutY="4.0" text="Players">
-            <font>
-               <Font size="15.0"/>
-            </font>
-         </Label>
-         <Button fx:id="refreshPlayerListButton" contentDisplay="BOTTOM" layoutX="4.0" layoutY="2.0"
-                 mnemonicParsing="false" onAction="#onRefreshPlayerListButtonActivated" text="Refresh"/>
-      </Pane>
-      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0"
-                  VBox.vgrow="ALWAYS">
-         <VBox fx:id="playerList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-            <BorderPane prefWidth="200.0">
-               <left>
-                  <Label text="Player name" BorderPane.alignment="CENTER">
-                     <BorderPane.margin>
-                        <Insets left="10.0"/>
-                     </BorderPane.margin>
-                  </Label>
-               </left>
-               <VBox.margin>
-                  <Insets/>
-               </VBox.margin>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-               </padding>
-               <right>
-                  <MenuButton mnemonicParsing="false" text="Challenge" BorderPane.alignment="CENTER">
-                     <BorderPane.margin>
-                        <Insets right="10.0"/>
-                     </BorderPane.margin>
-                  </MenuButton>
-               </right>
-               <center>
-                  <Button mnemonicParsing="false" text="ACCEPT" BorderPane.alignment="CENTER"/>
-               </center>
-            </BorderPane>
-         </VBox>
-      </ScrollPane>
-   </VBox>
-   <VBox id="info-pane" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefWidth="100.0">
-      <Label text="Subscriptions" VBox.vgrow="NEVER">
-         <VBox.margin>
-            <Insets bottom="5.0" top="5.0"/>
-         </VBox.margin>
-         <font>
-            <Font size="15.0"/>
-         </font>
-      </Label>
-      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0"
-                  VBox.vgrow="ALWAYS">
-         <VBox fx:id="subscriptionList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-            <BorderPane prefWidth="200.0">
-               <left>
-                  <Label text="Board game name" BorderPane.alignment="CENTER">
-                     <BorderPane.margin>
-                        <Insets left="10.0"/>
-                     </BorderPane.margin>
-                  </Label>
-               </left>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-               </padding>
-               <VBox.margin>
-                  <Insets/>
-               </VBox.margin>
-               <center>
-                  <Label text="Unsubscribed" BorderPane.alignment="CENTER"/>
-               </center>
-               <right>
-                  <Button mnemonicParsing="false" text="Subscribe" BorderPane.alignment="CENTER"/>
-               </right>
-            </BorderPane>
-         </VBox>
-      </ScrollPane>
-   </VBox>
-</SplitPane>
+
+<VBox prefHeight="200.0" prefWidth="800.0" stylesheets="@general.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hanzereversiai.projectp3.ui.OnlineLobbyPanelController">
+   <children>
+      <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+         <children>
+            <Label maxHeight="1.7976931348623157E308" text="AI depth: " textFill="WHITE" />
+            <TextField fx:id="aiDepthTextField" onKeyReleased="#onAIDepthTextFieldKeyReleased" prefWidth="60.0" promptText="Number" />
+            <Label fx:id="aiDepthErrorLabel" text="Error message" textFill="RED" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+      <SplitPane fx:id="lobbyPanelRoot" dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="700.0" VBox.vgrow="ALWAYS">
+         <items>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <Button fx:id="refreshPlayerListButton" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#onRefreshPlayerListButtonActivated" text="Refresh" />
+                        <Label text="Players">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="playerList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                           <children>
+                              <BorderPane prefWidth="200.0">
+                                 <center>
+                                    <Button mnemonicParsing="false" text="ACCEPT" BorderPane.alignment="CENTER" />
+                                 </center>
+                                 <left>
+                                    <Label text="Player name" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets left="10.0" />
+                                       </BorderPane.margin>
+                                    </Label>
+                                 </left>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <right>
+                                    <MenuButton mnemonicParsing="false" text="Challenge" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets right="10.0" />
+                                       </BorderPane.margin>
+                                    </MenuButton>
+                                 </right>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </BorderPane>
+                           </children>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+            <VBox id="info-pane" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="100.0">
+               <children>
+                  <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <Label text="Subscriptions">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" opacity="0.0" prefWidth="0.0" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="subscriptionList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                           <children>
+                              <BorderPane prefWidth="200.0">
+                                 <center>
+                                    <Label text="Unsubscribed" BorderPane.alignment="CENTER" />
+                                 </center>
+                                 <left>
+                                    <Label text="Board game name" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets left="10.0" />
+                                       </BorderPane.margin>
+                                    </Label>
+                                 </left>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <right>
+                                    <Button mnemonicParsing="false" text="Subscribe" BorderPane.alignment="CENTER" />
+                                 </right>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </BorderPane>
+                           </children>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </items>
+      </SplitPane>
+   </children>
+</VBox>

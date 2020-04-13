@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 
 /**
  * NetworkHandler is used to update the local game about events happening from the network.
+ *
+ * @author Mike
  */
 public class NetworkHandler {
     // REGEX Patterns
@@ -91,7 +93,7 @@ public class NetworkHandler {
 
             // Initialize the gameInstance
             AbstractGameInstance abstractGameInstance = GameFactory.buildNetworkedGameInstance(
-                    boardGameOption, playerOne, playerTwo);
+                    boardGameOption, playerOne, playerTwo, network.getAiDepthAmount());
 
             // Keep track of it locally
             this.gameInstance = (NetworkedGameInstance) abstractGameInstance;
