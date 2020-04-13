@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 
-
     private int[][] tileWeights;
     private int nOfMovesAhead;
 
