@@ -1,8 +1,6 @@
 package com.hanzereversiai.projectp3.ai;
 
-import com.thowv.javafxgridgameboard.AbstractGameInstance;
-import com.thowv.javafxgridgameboard.GameBoardTile;
-import com.thowv.javafxgridgameboard.GameBoardTileType;
+import com.thowv.javafxgridgameboard.*;
 import com.thowv.javafxgridgameboard.premades.AbstractTurnEntityRandomAI;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiAlgorithms;
 import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
@@ -10,13 +8,20 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
+//import java.util.concurrent.ExecutorService;
+//import java.util.concurrent.Executors;
+//import java.util.concurrent.TimeUnit;
 
 public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
+
+    private int[][] tileWeights;
+
     public ReversiTurnEntityAdvancedAI(String name) {
         super(name);
-    }
 
+        this.initiateWeights();
+    }
 
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
@@ -25,16 +30,14 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 
     private void takeTurn(ReversiGameInstance gameInstance) {
         ArrayList<GameBoardTile> possibleGameBoardTiles = ReversiAlgorithms.determineTilePossibilities(
-                gameInstance.getGameBoard(), getGameBoardTileType());
+                gameInstance.getGameBoard().getAllTiles(), getGameBoardTileType());
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
 
         if (possibleGameBoardTiles.size() != 0) {
             gameInstance.getGameBoard().setTileTypes(possibleGameBoardTiles,
                     GameBoardTileType.VISIBLE);
 
-            GameBoardTile bestMove = this.getBestMove(possibleGameBoardTiles, gameInstance);
-
-            pauseTransition.setOnFinished(e -> gameInstance.doTurn(bestMove.getXCord(), bestMove.getYCord()));
+            pauseTransition.setOnFinished(e -> this.doBestMove(gameInstance, possibleGameBoardTiles));
         }
         else{
             pauseTransition.setOnFinished(e -> gameInstance.passTurn());
@@ -44,92 +47,232 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         pauseTransition.play();
     }
 
-    public GameBoardTile getBestMove(ArrayList<GameBoardTile> availableTilesMoves, ReversiGameInstance gameInstance)
+    private void doBestMove(ReversiGameInstance gameInstance, ArrayList<GameBoardTile> possibleMoves)
     {
-        // Creating a tile hit analyzer
-        TileHitAnalyzer hitAnalyzer = new TileHitAnalyzer(gameInstance, availableTilesMoves);
-        // Adding given hits that a tile can make.
-        HashMap<GameBoardTile, HashMap<String, Integer>> availableTilesHits = hitAnalyzer.getTileHitsByDirection();
-        // Creating a position analyzer class
-        TilePositionAnalyzer positionAnalyzer = new TilePositionAnalyzer(gameInstance, availableTilesHits);
+        GameBoardTile bestMove = this.findBestMove(gameInstance, possibleMoves);
 
-        // Get from our possible moves (with directional hits) the side and the corner tiles.
-        // If we have a corner tile the possibility to win increases.
-        HashMap<GameBoardTile, HashMap<String, Integer>> availableSideTiles   = positionAnalyzer.getAvailableSideTiles();
-        // Side tile give a higher chance to win (but corner tiles are the best)
-        HashMap<GameBoardTile, HashMap<String, Integer>> availableCornerTiles = positionAnalyzer.getAvailableCornerTiles();
-
-
-        // Prioritize corner tiles --> strategy to win, they can't take it back
-        if(availableCornerTiles.size() > 0){
-            return this.getBestMoveByHits(availableCornerTiles);
-        }
-
-        // After corner tiles the side tiles have a priority (1 flank less)
-        availableSideTiles = this.removeTilesThatBenefitOpponent(availableSideTiles, gameInstance);
-        if(availableSideTiles.size() > 0){
-            return this.getBestMoveByHits(availableSideTiles);
-        }
-
-        // After side tiles, only mid-board tiles are left
-        HashMap<GameBoardTile, HashMap<String, Integer>> filteredAvailableTilesHits =
-                this.removeTilesThatBenefitOpponent(availableTilesHits, gameInstance);
-        if(filteredAvailableTilesHits.size() > 0){
-            return this.getBestMoveByHits(filteredAvailableTilesHits);
-        }
-
-        // Forced to play a move that might benefit opponent
-        return this.getBestMoveByHits(availableTilesHits);
+        gameInstance.doTurn(bestMove.getXCord(), bestMove.getYCord());
     }
 
-    private HashMap<GameBoardTile, HashMap<String, Integer>> removeTilesThatBenefitOpponent(HashMap<GameBoardTile, HashMap<String, Integer>> inputTiles, ReversiGameInstance gameInstance){
-        HashMap<GameBoardTile, HashMap<String, Integer>> filteredTiles = new HashMap<>();
+    private GameBoardTile findBestMove(ReversiGameInstance gameInstance, ArrayList<GameBoardTile> possibleMoves)
+    {
+        GameBoardTileType currentTileType = gameInstance.getCurrentTurnEntity().getGameBoardTileType();
+        int bestScoreYet = -9999;
+        GameBoardTile bestTileYet = possibleMoves.get(0);
 
-        for(HashMap.Entry<GameBoardTile, HashMap<String, Integer>> entry : inputTiles.entrySet()){
-            GameBoardTile tile = entry.getKey();
-            HashMap<String, Integer> directionHits = entry.getValue();
+//        HashMap<GameBoardTile, Integer> moveScores = new HashMap<>();
 
-            // If move will enable opponent to get side tiles
-            if(!(
-                    tile.getXCord() == 1 ||
-                    tile.getXCord() == gameInstance.getGameBoard().getSize() - 2 ||
-                    tile.getYCord() == 1||
-                    tile.getYCord() == gameInstance.getGameBoard().getSize() - 2
-            )){
-                filteredTiles.put(tile, directionHits);
+        for(GameBoardTile possibleMove : possibleMoves){
+            GameBoardTile[][] gameBoardTiles = gameInstance.getGameBoard().getAllTiles();
+
+            GameBoardTileType[][] resetArray = this.getResetArray(gameBoardTiles);
+
+            int moveScore = getScoreAfterMove(gameBoardTiles, possibleMove, currentTileType);
+            moveScore += getNextMoveScore(gameBoardTiles, 15, 0, false, AlgorithmHelper.flipTileType(currentTileType));
+            this.resetBoardTo(gameBoardTiles, resetArray);
+
+            if(moveScore > bestScoreYet){
+                bestTileYet = possibleMove;
+                bestScoreYet = moveScore;
             }
         }
 
-        return filteredTiles;
+        // TODO: fix threading issues, board seems to be shared among threads
+//        ExecutorService executorService = Executors.newCachedThreadPool();
+//
+//        for(GameBoardTile possibleMove : possibleMoves){
+//            executorService.execute(new Runnable(){
+//                @Override
+//                public void run() {
+//                    GameBoard copiedGameBoard = copyGameBoard(gameInstance.getGameBoard());
+//                    int moveScore = getScoreAfterMove(copiedGameBoard, possibleMove, currentTileType);
+//                    moveScore += getNextMoveScore(copiedGameBoard, 15, 0, false, AlgorithmHelper.flipTileType(currentTileType));
+//                    gameInstance.getGameBoard().setTileType(possibleMove.getXCord(), possibleMove.getYCord(), GameBoardTileType.HIDDEN);
+//
+//                    moveScores.put(possibleMove, moveScore);
+//                }
+//            });
+//        }
+//
+//        executorService.shutdown();
+//
+//        try {
+//            if(!executorService.awaitTermination(8, TimeUnit.SECONDS)){
+//                executorService.shutdownNow();
+//            }
+//        } catch (InterruptedException e){
+//            e.printStackTrace();
+//            executorService.shutdownNow();
+//        }
+//
+//        for(HashMap.Entry<GameBoardTile, Integer> entry : moveScores.entrySet()){
+//            GameBoardTile move = entry.getKey();
+//            Integer moveScore = entry.getValue();
+//
+//            if(moveScore > bestScoreYet){
+//                bestTileYet = move;
+//                bestScoreYet = moveScore;
+//            }
+//        }
+
+        return bestTileYet;
     }
 
-    private GameBoardTile getBestMoveByHits(HashMap<GameBoardTile, HashMap<String, Integer>> tiles)
-    {
-        GameBoardTile bestMove = null;
-        int highestYet = 0;
+    private int getNextMoveScore(GameBoardTile[][] gameBoardTiles, int nOfMovesAhead, int nOfMovesProcessed, boolean aiTurn, GameBoardTileType currentTileType){
+        ArrayList<GameBoardTile> possibleMoves = ReversiAlgorithms.determineTilePossibilities(gameBoardTiles, currentTileType);
 
-        for(HashMap.Entry<GameBoardTile, HashMap<String, Integer>> entry : tiles.entrySet()) {
-            GameBoardTile tile = entry.getKey();
-            HashMap<String, Integer> directionHits = entry.getValue();
+        // If final move
+        if(this.isFinalMove(gameBoardTiles)){
+            int currentPlayerTiles = this.getNOfTilesByType(gameBoardTiles, currentTileType);
+            int opponentTiles = this.getNOfTilesByType(gameBoardTiles, AlgorithmHelper.flipTileType(currentTileType));
 
-            if(this.getDirectionHitsSum(directionHits) > highestYet){
-                bestMove = tile;
+            if(currentPlayerTiles > opponentTiles){
+                // Current player wins
+                return 1000;
+            } else if(currentPlayerTiles == opponentTiles){
+                // Draw
+                return 500;
+            } else {
+                // Current player lost
+                return -1000;
             }
         }
 
-        return bestMove;
-    }
-
-    private int getDirectionHitsSum(HashMap<String, Integer> directionHits)
-    {
-        int directionHitsSum = 0;
-
-        for (HashMap.Entry<String, Integer> direction : directionHits.entrySet()) {
-            int hits = direction.getValue();
-
-            directionHitsSum += hits;
+        if(nOfMovesProcessed > nOfMovesAhead || possibleMoves.size() <= 0){
+            return 0;
         }
 
-        return directionHitsSum;
+        int bestScoreYet;
+        if(aiTurn){
+            bestScoreYet = -9999;
+        } else {
+            bestScoreYet =  9999;
+        }
+
+        for(GameBoardTile possibleMove : possibleMoves){
+            GameBoardTileType[][] resetArray = this.getResetArray(gameBoardTiles);
+
+            int moveScore = this.getScoreAfterMove(gameBoardTiles, possibleMove, currentTileType);
+            int nextMoveScore = this.getNextMoveScore(gameBoardTiles, nOfMovesAhead, ++nOfMovesProcessed, !aiTurn, AlgorithmHelper.flipTileType(currentTileType));
+            this.resetBoardTo(gameBoardTiles, resetArray);
+
+            if(!aiTurn){
+                moveScore *= -1;
+            } else {
+                nextMoveScore *= -1;
+            }
+
+            moveScore += nextMoveScore;
+
+            if((aiTurn && moveScore > bestScoreYet) || (!aiTurn && moveScore < bestScoreYet)){
+                bestScoreYet = moveScore;
+            }
+        }
+
+        return bestScoreYet;
+    }
+
+    private int getScoreAfterMove(GameBoardTile[][] gameBoardTiles, GameBoardTile move, GameBoardTileType currentTileType)
+    {
+        int scoreOldBoard = this.evaluateBoard(gameBoardTiles, currentTileType);
+        gameBoardTiles[move.getXCord()][move.getYCord()].setGameBoardTileType(currentTileType);
+        ReversiAlgorithms.flipTilesFromOrigin(gameBoardTiles, move.getXCord(), move.getYCord());
+        int scoreNewBoard = this.evaluateBoard(gameBoardTiles, currentTileType);
+
+        return scoreNewBoard - scoreOldBoard;
+    }
+
+    private int evaluateBoard(GameBoardTile[][] gameBoardTiles, GameBoardTileType currentTileType)
+    {
+        int scoreCurrentMinusOpponent = 0;
+
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                if(gameBoardTiles[x][y].getGameBoardTileType() == currentTileType){
+                    scoreCurrentMinusOpponent += this.tileWeights[x][y];
+                } else {
+                    scoreCurrentMinusOpponent -= this.tileWeights[x][y];
+                }
+            }
+        }
+
+        return scoreCurrentMinusOpponent;
+    }
+
+    private void initiateWeights()
+    {
+        // TODO: experiment with dynamic weights, I.E.: change [1, 1] from -24 to 99 when [0, 0] is already filled
+        // TODO: at the endgame, the weights wont properly represent the real worth of the tile, causing the AI to make bad choices
+        int[][] weights = {
+            {99,  -8,  8,  6,  6,  8,  -8, 99},
+            {-8, -24, -4, -3, -3, -4, -24, -8},
+            { 8,  -4,  7,  4,  4,  7,  -4,  8},
+            { 6,  -3,  4,  0,  0,  0,  -3,  6},
+            { 6,  -3,  4,  0,  0,  0,  -3,  6},
+            { 8,  -4,  7,  4,  4,  7,  -4,  8},
+            {-8, -24, -4, -3, -3, -4, -24, -8},
+            {99,  -8,  8,  6,  6,  8,  -8, 99}
+        };
+
+        this.tileWeights = weights;
+    }
+
+    private GameBoardTileType[][] getResetArray(GameBoardTile[][] gameBoardTiles)
+    {
+        GameBoardTileType[][] resetArray = new GameBoardTileType[8][8];
+
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+
+                // Manually setting them will ensure it is not the same object. Using the code in the next line will cause errors.
+                // resetArray[x][y] = gameBoardTiles[x][y].getGameBoardTileType()
+
+                if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.HIDDEN){
+                    resetArray[x][y] = GameBoardTileType.HIDDEN;
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.VISIBLE){
+                    resetArray[x][y] = GameBoardTileType.VISIBLE;
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.INTERACTABLE){
+                    resetArray[x][y] = GameBoardTileType.INTERACTABLE;
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.PLAYER_1){
+                    resetArray[x][y] = GameBoardTileType.PLAYER_1;
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == GameBoardTileType.PLAYER_2){
+                    resetArray[x][y] = GameBoardTileType.PLAYER_2;
+                }
+            }
+        }
+
+        return resetArray;
+    }
+
+    private void resetBoardTo(GameBoardTile[][] gameBoardTiles, GameBoardTileType[][] resetArray)
+    {
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                gameBoardTiles[x][y].setGameBoardTileType(resetArray[x][y]);
+            }
+        }
+    }
+
+    private boolean isFinalMove(GameBoardTile[][] gameBoardTiles)
+    {
+        int nOfPlayerOccupiedTiles = this.getNOfTilesByType(gameBoardTiles, GameBoardTileType.PLAYER_1);
+        nOfPlayerOccupiedTiles += this.getNOfTilesByType(gameBoardTiles, GameBoardTileType.PLAYER_2);
+
+        return nOfPlayerOccupiedTiles <= 1;
+    }
+
+    private int getNOfTilesByType(GameBoardTile[][] gameBoardTiles, GameBoardTileType gameBoardTileType)
+    {
+        int n = 0;
+
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                if(gameBoardTiles[x][y].getGameBoardTileType() == gameBoardTileType){
+                    n++;
+                }
+            }
+        }
+
+        return n;
     }
 }
