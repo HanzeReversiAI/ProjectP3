@@ -3,7 +3,17 @@ package com.hanzereversiai.projectp3.ui;
 import com.hanzereversiai.projectp3.networking.Network;
 import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 
+/**
+ * @author Thomas
+ */
 public class ConnectionPanelModel {
+    /**
+     * Check the given data and try to start a connection
+     * @param ip IP that the connection should use
+     * @param port Port that the connection should use
+     * @param username Username used for logging in after a connection has been made
+     * @return An error if something is wrong
+     */
     public String startOnlineConnection(String ip, String port, String username) {
         int portInteger;
 
@@ -26,6 +36,11 @@ public class ConnectionPanelModel {
         return "";
     }
 
+    /**
+     * Check the given data and store this in the network object
+     * @param username Username used for identification
+     * @return An error if something is wrong
+     */
     public String startOfflineConnection(String username) {
         // Do check to make sure filled in field is viable
         if (username.isEmpty())

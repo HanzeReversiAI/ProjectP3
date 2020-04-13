@@ -91,7 +91,7 @@ public class NetworkHandler {
 
             // Initialize the gameInstance
             AbstractGameInstance abstractGameInstance = GameFactory.buildNetworkedGameInstance(
-                    boardGameOption, playerOne, playerTwo);
+                    boardGameOption, playerOne, playerTwo, network.getAiDepthAmount());
 
             // Keep track of it locally
             this.gameInstance = (NetworkedGameInstance) abstractGameInstance;

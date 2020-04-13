@@ -10,11 +10,26 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * @author Thomas
+ */
 public class UIHelper {
+    /**
+     * Switch the scene in the stage.
+     * @param actionEvent The event that fired this method, used for grabbing the curRent scene
+     * @param fxml The fxml that has to be loaded in the new scene
+     * @return The FXMLLoader used for loading the fxml
+     */
     public static FXMLLoader switchScene(ActionEvent actionEvent, String fxml) {
         return switchScene(((Node)actionEvent.getSource()).getScene(), fxml);
     }
 
+    /**
+     * Switch the scene in the stage.
+     * @param scene The current scene
+     * @param fxml The fxml that has to be loaded in the new scene
+     * @return The FXMLLoader used for loading the fxml
+     */
     public static FXMLLoader switchScene(Scene scene, String fxml) {
         try {
             double width = scene.getWidth();
@@ -37,6 +52,7 @@ public class UIHelper {
             return loader;
         }
         catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
     }

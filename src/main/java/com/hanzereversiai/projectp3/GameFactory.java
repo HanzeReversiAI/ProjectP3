@@ -15,14 +15,14 @@ import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeGameInstance;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeTurnEntityPlayer;
 
 public class GameFactory {
-    public static AbstractGameInstance buildGameInstance(BoardGameOption boardGameOption, String playerOneOption, String playerTwoOption) {
-        return buildGameInstance(boardGameOption, new String[] { playerOneOption, playerTwoOption });
+    public static AbstractGameInstance buildGameInstance(BoardGameOption boardGameOption, String playerOneOption, String playerTwoOption, int aiDepthAmount) {
+        return buildGameInstance(boardGameOption, new String[] { playerOneOption, playerTwoOption }, aiDepthAmount);
     }
-    public static AbstractGameInstance buildNetworkedGameInstance(BoardGameOption boardGameOption, String playerOneOption, String playerTwoOption) {
-        return buildNetworkedGameInstance(boardGameOption, new String[] { playerOneOption, playerTwoOption });
+    public static AbstractGameInstance buildNetworkedGameInstance(BoardGameOption boardGameOption, String playerOneOption, String playerTwoOption, int aiDepthAmount) {
+        return buildNetworkedGameInstance(boardGameOption, new String[] { playerOneOption, playerTwoOption }, aiDepthAmount);
     }
 
-    private static AbstractGameInstance buildGameInstance(BoardGameOption boardGameOption, String[] playerOptions) {
+    private static AbstractGameInstance buildGameInstance(BoardGameOption boardGameOption, String[] playerOptions, int aiDepthAmount) {
         GameBoard gameBoard;
         AbstractTurnEntity[] turnEntities = new AbstractTurnEntity[2];
         AbstractGameInstance gameInstance = null;
@@ -55,7 +55,7 @@ public class GameFactory {
         return gameInstance;
     }
 
-    private static AbstractGameInstance buildNetworkedGameInstance(BoardGameOption boardGameOption, String[] playerOptions) {
+    private static AbstractGameInstance buildNetworkedGameInstance(BoardGameOption boardGameOption, String[] playerOptions, int aiDepthAmount) {
         GameBoard gameBoard;
         AbstractTurnEntity[] turnEntities = new AbstractTurnEntity[2];
         AbstractGameInstance gameInstance = null;

@@ -21,7 +21,9 @@ public class App extends Application {
 
     @Override
     public void stop() throws Exception {
-        NetworkSingleton.getNetworkInstance().stopConnection();
+        if (NetworkSingleton.getNetworkInstance() != null)
+            NetworkSingleton.getNetworkInstance().stopConnection();
+
         super.stop();
     }
 
