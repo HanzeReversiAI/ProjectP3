@@ -34,7 +34,7 @@ public class GameFactory {
                 if (playerOptions[i].equals("Player"))
                     turnEntities[i] = new ReversiTurnEntityPlayer("Player " + (i + 1));
                 else if(playerOptions[i].equals("AI"))
-                    turnEntities[i] = new ReversiTurnEntityAdvancedAI("Player" + (i + 1));
+                    turnEntities[i] = new ReversiTurnEntityAdvancedAI("AI " + (i + 1), aiDepthAmount);
             }
 
             gameInstance = new ReversiGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
@@ -46,7 +46,7 @@ public class GameFactory {
                 if (playerOptions[i].equals("Player"))
                     turnEntities[i] = new TTToeTurnEntityPlayer("Player " + (i + 1));
                 else if(playerOptions[i].equals("AI"))
-                    turnEntities[i] = new TTToeTurnEntityAdvancedAI("Player " + (i + 1));
+                    turnEntities[i] = new TTToeTurnEntityAdvancedAI("AI  " + (i + 1));
             }
 
             gameInstance = new TTToeGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
@@ -65,7 +65,7 @@ public class GameFactory {
 
             for (int i = 0; i < playerOptions.length; i++) {
                 if (playerOptions[i].equals("Player"))
-                    turnEntities[i] = new ReversiTurnEntityAdvancedAI("You");
+                    turnEntities[i] = new ReversiTurnEntityAdvancedAI("You", aiDepthAmount);
                 else if(playerOptions[i].contains("Network")) {
                     String[] info = playerOptions[i].split("-");
                     turnEntities[i] = new NetworkTurnEntity(info[1]);
