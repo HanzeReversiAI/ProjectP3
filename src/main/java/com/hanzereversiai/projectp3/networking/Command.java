@@ -1,5 +1,10 @@
 package com.hanzereversiai.projectp3.networking;
 
+/**
+ * Enumerator used to send commands over the network
+ *
+ * @author Mike
+ */
 public enum Command {
     LOGIN,
     LOGOUT,
@@ -14,10 +19,21 @@ public enum Command {
     HELP_COMMAND,
     ;
 
+    /**
+     * Send a command without a parameter
+     * @param connection The Connection to send the command through
+     * @param command The command to be send
+     */
     public static void sendCommand(Connection connection, Command command) {
         sendCommand(connection, command, "");
     }
 
+    /**
+     * Send a command with a parameter
+     * @param connection The Connection to send the command through
+     * @param command The command to be send
+     * @param argument The parameter to be send with the command
+     */
     public static void sendCommand(Connection connection, Command command, String argument) {
         System.out.println("NETWORK SEND: " + command + " Arg: " + argument);
 

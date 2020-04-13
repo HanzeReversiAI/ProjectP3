@@ -6,6 +6,7 @@ package com.hanzereversiai.projectp3.networking;
  * This means that any class implementing this must contain a handleInput function.
  * Or provide a function accepting a single String.
  *
+ * @author Mike
  */
 public interface InputListener {
     void handleInput(String input);

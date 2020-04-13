@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 
 /**
  * NetworkHandler is used to update the local game about events happening from the network.
+ *
+ * @author Mike
  */
 public class NetworkHandler {
     // REGEX Patterns
@@ -36,7 +38,7 @@ public class NetworkHandler {
      */
     public NetworkHandler(Network network) {
         this.network = network;
-        subscribeAll(network.getDelegateInputListener());
+        subscribeAll(network.getDelegateInputHandler());
     }
 
     /**
@@ -214,27 +216,27 @@ public class NetworkHandler {
 
     /**
      * Subscribe to inputs from the network
-     * @param delegateInputListener DelegateInputListener instance to subscribe to.
+     * @param delegateInputHandler DelegateInputListener instance to subscribe to.
      */
-    public void subscribeAll(DelegateInputListener delegateInputListener) {
-        delegateInputListener.SUBSCRIBE_MATCH(this::handleMatch, this.hashCode());
-        delegateInputListener.SUBSCRIBE_MOVE(this::handleMove, this.hashCode());
-        delegateInputListener.SUBSCRIBE_YOURTURN(this::handleTurn, this.hashCode());
-        delegateInputListener.SUBSCRIBE_WIN(this::handleWin, this.hashCode());
-        delegateInputListener.SUBSCRIBE_LOSS(this::handleLoss, this.hashCode());
-        delegateInputListener.SUBSCRIBE_DRAW(this::handleDraw, this.hashCode());
+    public void subscribeAll(DelegateInputHandler delegateInputHandler) {
+        delegateInputHandler.SUBSCRIBE_MATCH(this::handleMatch, this.hashCode());
+        delegateInputHandler.SUBSCRIBE_MOVE(this::handleMove, this.hashCode());
+        delegateInputHandler.SUBSCRIBE_YOURTURN(this::handleTurn, this.hashCode());
+        delegateInputHandler.SUBSCRIBE_WIN(this::handleWin, this.hashCode());
+        delegateInputHandler.SUBSCRIBE_LOSS(this::handleLoss, this.hashCode());
+        delegateInputHandler.SUBSCRIBE_DRAW(this::handleDraw, this.hashCode());
     }
     /**
      * Unsubscribe to inputs from the network
-     * @param delegateInputListener DelegateInputListener instance to unsubscribe from.
+     * @param delegateInputHandler DelegateInputListener instance to unsubscribe from.
      */
-    public void unsubscribeAll(DelegateInputListener delegateInputListener) {
-        delegateInputListener.UNSUBSCRIBE_MATCH(this.hashCode());
-        delegateInputListener.UNSUBSCRIBE_MOVE(this.hashCode());
-        delegateInputListener.UNSUBSCRIBE_YOURTURN(this.hashCode());
-        delegateInputListener.UNSUBSCRIBE_WIN(this.hashCode());
-        delegateInputListener.UNSUBSCRIBE_LOSS(this.hashCode());
-        delegateInputListener.UNSUBSCRIBE_DRAW(this.hashCode());
+    public void unsubscribeAll(DelegateInputHandler delegateInputHandler) {
+        delegateInputHandler.UNSUBSCRIBE_MATCH(this.hashCode());
+        delegateInputHandler.UNSUBSCRIBE_MOVE(this.hashCode());
+        delegateInputHandler.UNSUBSCRIBE_YOURTURN(this.hashCode());
+        delegateInputHandler.UNSUBSCRIBE_WIN(this.hashCode());
+        delegateInputHandler.UNSUBSCRIBE_LOSS(this.hashCode());
+        delegateInputHandler.UNSUBSCRIBE_DRAW(this.hashCode());
     }
 
     /**

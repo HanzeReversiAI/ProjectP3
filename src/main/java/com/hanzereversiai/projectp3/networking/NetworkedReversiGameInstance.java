@@ -7,6 +7,8 @@ import com.thowv.javafxgridgameboard.premades.reversi.ReversiGameInstance;
 
 /**
  * A Version of the ReversiGameInstance that supports playing against another opponent via the network
+ *
+ * @author Mike
  */
 public class NetworkedReversiGameInstance extends ReversiGameInstance implements NetworkedGameInstance {
     /**
@@ -34,6 +36,7 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
         int move = (width * y) + x;
         NetworkSingleton.getNetworkInstance().sendCommand(Command.MOVE, String.valueOf(move));
     }
+
     /**
      * Do a turn on the GameBoard
      *

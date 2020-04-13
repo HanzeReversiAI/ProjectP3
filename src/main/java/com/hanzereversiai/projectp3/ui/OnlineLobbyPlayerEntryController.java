@@ -11,13 +11,14 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+/**
+ * UI Controller for the playerlist items
+ *
+ * Each one of these shows a player, a challenge button and optionally a accept button.
+ *
+ * @author Mike
+ */
 public class OnlineLobbyPlayerEntryController {
-    private final static Pattern gamePattern = Pattern.compile("GAMETYPE: \"(.*?)\"");
-    private final static Pattern challengerPattern = Pattern.compile("CHALLENGER: \"(.*?)\",");
-    private final static Pattern numberPattern = Pattern.compile("CHALLENGENUMBER: \"(.*?)\",");
 
     public BorderPane rootBorderPane;
     public Label playerNameLabel;
@@ -26,20 +27,32 @@ public class OnlineLobbyPlayerEntryController {
     public Label challengedLabel;
 
     private String game;
-    private String opponent;
     private int challengeNumber;
 
+    /**
+     * Clean UI and tell the Network about ourselfs
+     */
     @FXML
     public void initialize() {
         hideChallengeAcceptButton();
         hideChallengedLabel();
-        NetworkSingleton.getNetworkInstance().getDelegateInputListener().SUBSCRIBE_CHALLENGE(this::handleChallenge, this.hashCode());
+        NetworkSingleton.getNetworkInstance().getOnlineLobbyPanelNetworkHandler().addOnlineLobbyPlayerEntryController(this);
     }
 
+    /**
+     * When pressing the Challenge accept button
+     * @param actionEvent JavaFX actionEvent
+     */
     public void onChallengeAcceptButtonActivated(ActionEvent actionEvent) {
         NetworkSingleton.getNetworkInstance().sendCommand(Command.ACCEPT_CHALLENGE, String.valueOf(challengeNumber));
     }
 
+    /**
+     * hen pressing the Challenge accept button
+     * @param actionEvent JavaFX actionEvent
+     * @param game The game that is being accepted
+     * @param player The player that challenged us
+     */
     public void onChallengeAcceptMenuButtonActivated(ActionEvent actionEvent, String game, String player) {
         NetworkSingleton.getNetworkInstance().sendCommand(Command.CHALLENGE, "\"" + player + "\" \"" + game + "\"");
 
@@ -47,56 +60,71 @@ public class OnlineLobbyPlayerEntryController {
         showChallengedLabel();
     }
 
-    // TODO: If the player is not in the overview no accept button will appear,
-    // TODO: calling the getPlayerList command however causes the screen to not update in time.
-    public void handleChallenge(String input) {
-        Matcher matcher = challengerPattern.matcher(input);
-
-        if (matcher.find() && matcher.group(1).equals(playerNameLabel.getText())) {
-            hideChallengedLabel();
-            showChallengeAcceptButton();
-
-            matcher = gamePattern.matcher(input);
-
-            if (matcher.find())
-                game = matcher.group(1);
-            else
-                throw new IllegalArgumentException();
-
-            matcher = numberPattern.matcher(input);
-
-            if (matcher.find())
-                challengeNumber = Integer.parseInt(matcher.group(1));
-            else
-                throw new IllegalArgumentException();
-        }
-    }
-
+    /**
+     * Sets the player name of the playerlist item
+     * @param playerName The playername to set
+     */
     public void setPlayerName(String playerName) {
         playerNameLabel.setText(playerName);
     }
 
+    /**
+     * Add the Challenge button
+     * @param menuItem MenuItem menuItem
+     */
     public void addChallengeOptions(MenuItem menuItem) {
         challengeMenuButton.getItems().add(menuItem);
     }
 
+    /**
+     * Add Challenge buttons
+     * @param menuItems MenuItem[] menuItems
+     */
     public void addChallengeOptions(MenuItem[] menuItems) {
         challengeMenuButton.getItems().addAll(menuItems);
     }
 
+    /**
+     * Hide the Challenge Accept button
+     */
     public void hideChallengeAcceptButton() {
         Platform.runLater(() -> challengeAcceptButton.setVisible(false));
     }
 
+    /**
+     * Show the Challenge Accept button
+     */
     public void showChallengeAcceptButton() {
         Platform.runLater(() -> challengeAcceptButton.setVisible(true));
     }
 
+    /**
+     * Hide the challenge Label
+     */
     public void hideChallengedLabel() {
         Platform.runLater(() -> challengedLabel.setVisible(false));
     }
 
+    /**
+     * Show the challenge Label
+     */
     public void showChallengedLabel() {
         Platform.runLater(() -> challengedLabel.setVisible(true));
+    }
+
+    /**
+     * Set the number of the challenge
+     * @param challengeNumber The challenge number provided by the server
+     */
+    public void setChallengeNumber(int challengeNumber) {
+        this.challengeNumber = challengeNumber;
+    }
+
+    /**
+     * Set the game type of the challenge
+     * @param game The game type of the challenge provided by the server
+     */
+    public void setGame(String game) {
+        this.game = game;
     }
 }

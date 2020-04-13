@@ -14,6 +14,10 @@ import com.thowv.javafxgridgameboard.premades.reversi.ReversiTurnEntityPlayer;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeGameInstance;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeTurnEntityPlayer;
 
+/**
+ *
+ * @author Thomas, Mike
+ */
 public class GameFactory {
     public static AbstractGameInstance buildGameInstance(BoardGameOption boardGameOption, String playerOneOption, String playerTwoOption, int aiDepthAmount) {
         return buildGameInstance(boardGameOption, new String[] { playerOneOption, playerTwoOption }, aiDepthAmount);

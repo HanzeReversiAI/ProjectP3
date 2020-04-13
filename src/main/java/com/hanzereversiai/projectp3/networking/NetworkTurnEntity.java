@@ -5,6 +5,8 @@ import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 
 /**
  * A TurnEntity to be controlled from the Network
+ *
+ * @author Mike
  */
 public class NetworkTurnEntity extends AbstractTurnEntity {
     /**
@@ -15,6 +17,10 @@ public class NetworkTurnEntity extends AbstractTurnEntity {
         super(EntityType.AI, name);
     }
 
+    /**
+     * Implement takeTurn, we don't do anything with it because it it handled from the Network
+     * @param abstractGameInstance AbstractGameInstance
+     */
     @Override
     public void takeTurn(AbstractGameInstance abstractGameInstance) { }
 }

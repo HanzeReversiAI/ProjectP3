@@ -13,9 +13,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
 /**
- * @author Thomas
+ * UI Controller for the lobby panel
+ *
+ * @author Thomas, Mike
  */
 public class OnlineLobbyPanelController {
+
     public SplitPane lobbyPanelRoot;
     public VBox playerList;
     public VBox subscriptionList;

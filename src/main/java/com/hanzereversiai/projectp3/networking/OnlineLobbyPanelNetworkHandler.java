@@ -15,11 +15,18 @@ import java.util.regex.Pattern;
 
 /**
  * Handles network commands for the OnlineLobbyPanel
+ *
+ * @author Mike
  */
 public class OnlineLobbyPanelNetworkHandler {
-    private final static Pattern listPattern = Pattern.compile("\"(.*?)\"[,\\]]"); // REGEX Pattern
+    // REGEX Patterns
+    private final static Pattern listPattern = Pattern.compile("\"(.*?)\"[,\\]]");
+    private final static Pattern gamePattern = Pattern.compile("GAMETYPE: \"(.*?)\"");
+    private final static Pattern challengerPattern = Pattern.compile("CHALLENGER: \"(.*?)\",");
+    private final static Pattern numberPattern = Pattern.compile("CHALLENGENUMBER: \"(.*?)\",");
 
     private OnlineLobbyPanelController onlineLobbyPanelController;
+    private ArrayList<OnlineLobbyPlayerEntryController> onlineLobbyPlayerEntryControllers;
     private ArrayList<String> lobbyPanelChallenges;
 
     /**
@@ -28,7 +35,8 @@ public class OnlineLobbyPanelNetworkHandler {
      */
     public OnlineLobbyPanelNetworkHandler(Network network) {
         lobbyPanelChallenges = new ArrayList<>();
-        subscribeAll(network.getDelegateInputListener());
+        onlineLobbyPlayerEntryControllers = new ArrayList<>();
+        subscribeAll(network.getDelegateInputHandler());
     }
 
     /**
@@ -111,20 +119,55 @@ public class OnlineLobbyPanelNetworkHandler {
     }
 
     /**
-     * Subscribe to inputs from the network
-     * @param delegateInputListener DelegateInputListener instance to subscribe to.
+     * Handles getting challenges and displaying a button to accept them.
+     * @param input SVR GAME CHALLENGE {CHALLENGER: "<opponent>", GAMETYPE: "<game type>", CHALLENGENUMBER: "<number>"}
      */
-    private void subscribeAll(DelegateInputListener delegateInputListener) {
-        delegateInputListener.SUBSCRIBE_PLAYERLIST(this::handlePlayerList, this.hashCode());
-        delegateInputListener.SUBSCRIBE_GAMELIST(this::handleGameList, this.hashCode());
+    public void handleChallenge(String input) {
+        if (!onlineLobbyPlayerEntryControllers.isEmpty()) {
+            for (OnlineLobbyPlayerEntryController onlineLobbyPlayerEntryController : onlineLobbyPlayerEntryControllers) {
+                if (onlineLobbyPlayerEntryController != null) {
+                    Matcher matcher = challengerPattern.matcher(input);
+
+                    if (matcher.find() && matcher.group(1).equals(onlineLobbyPlayerEntryController.playerNameLabel.getText())) {
+                        onlineLobbyPlayerEntryController.hideChallengedLabel();
+                        onlineLobbyPlayerEntryController.showChallengeAcceptButton();
+
+                        matcher = gamePattern.matcher(input);
+
+                        if (matcher.find())
+                            onlineLobbyPlayerEntryController.setGame(matcher.group(1));
+                        else
+                            throw new IllegalArgumentException();
+
+                        matcher = numberPattern.matcher(input);
+
+                        if (matcher.find())
+                            onlineLobbyPlayerEntryController.setChallengeNumber(Integer.parseInt(matcher.group(1)));
+                        else
+                            throw new IllegalArgumentException();
+                    } else throw new IllegalStateException();
+                }
+            }
+        } else throw new IllegalStateException();
+    }
+
+    /**
+     * Subscribe to inputs from the network
+     * @param delegateInputHandler DelegateInputListener instance to subscribe to.
+     */
+    private void subscribeAll(DelegateInputHandler delegateInputHandler) {
+        delegateInputHandler.SUBSCRIBE_PLAYERLIST(this::handlePlayerList, this.hashCode());
+        delegateInputHandler.SUBSCRIBE_GAMELIST(this::handleGameList, this.hashCode());
+        delegateInputHandler.SUBSCRIBE_CHALLENGE(this::handleChallenge, this.hashCode());
     }
     /**
      * Unsubscribe to inputs from the network
-     * @param delegateInputListener DelegateInputListener instance to unsubscribe from.
+     * @param delegateInputHandler DelegateInputListener instance to unsubscribe from.
      */
-    private void unsubscribeAll(DelegateInputListener delegateInputListener) {
-        delegateInputListener.UNSUBSCRIBE_PLAYERLIST(this.hashCode());
-        delegateInputListener.UNSUBSCRIBE_GAMELIST(this.hashCode());
+    private void unsubscribeAll(DelegateInputHandler delegateInputHandler) {
+        delegateInputHandler.UNSUBSCRIBE_PLAYERLIST(this.hashCode());
+        delegateInputHandler.UNSUBSCRIBE_GAMELIST(this.hashCode());
+        delegateInputHandler.UNSUBSCRIBE_CHALLENGE(this.hashCode());
     }
 
     /**
@@ -133,5 +176,13 @@ public class OnlineLobbyPanelNetworkHandler {
      */
     public void setOnlineLobbyPanelController(OnlineLobbyPanelController onlineLobbyPanelController) {
         this.onlineLobbyPanelController = onlineLobbyPanelController;
+    }
+
+    /**
+     * Add a OnlineLobbyPlayerEntryController that should be updated by the OnlineLobbyPanelNetworkHandler
+     * @param onlineLobbyPlayerEntryController onlineLobbyPlayerEntryController that should be updated by the OnlineLobbyPanelNetworkHandler
+     */
+    public void addOnlineLobbyPlayerEntryController(OnlineLobbyPlayerEntryController onlineLobbyPlayerEntryController) {
+        onlineLobbyPlayerEntryControllers.add(onlineLobbyPlayerEntryController);
     }
 }
