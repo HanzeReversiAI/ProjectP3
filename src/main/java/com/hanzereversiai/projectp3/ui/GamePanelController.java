@@ -1,5 +1,6 @@
 package com.hanzereversiai.projectp3.ui;
 
+import com.hanzereversiai.projectp3.networking.NetworkSingleton;
 import com.thowv.javafxgridgameboard.AbstractGameInstance;
 import com.thowv.javafxgridgameboard.AbstractTurnEntity;
 import com.thowv.javafxgridgameboard.GameBoard;
@@ -78,6 +79,8 @@ public class GamePanelController {
             Label endLabel = new Label(endMessage);
             endLabel.setId("end-message-label");
             centerStackPane.getChildren().add(endLabel);
+
+            NetworkSingleton.getNetworkInstance().getNetworkHandler().setRootUIObject(centerStackPane);
         });
     }
 
