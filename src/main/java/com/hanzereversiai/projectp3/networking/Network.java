@@ -17,7 +17,7 @@ public class Network {
     private boolean isConnected;
 
     private Connection connection;
-    private DelegateInputListener delegateInputListener;
+    private DelegateInputHandler delegateInputHandler;
 
     private NetworkHandler networkHandler;
     private OnlineLobbyPanelNetworkHandler onlineLobbyPanelNetworkHandler;
@@ -62,7 +62,7 @@ public class Network {
 
         if (shouldCreateConnection) {
             createConnection();
-            delegateInputListener = new DelegateInputListener(this);
+            delegateInputHandler = new DelegateInputHandler(this);
             networkHandler = new NetworkHandler(this);
             onlineLobbyPanelNetworkHandler = new OnlineLobbyPanelNetworkHandler(this);
         }
@@ -91,29 +91,62 @@ public class Network {
         }
     }
 
+    /**
+     * Get the username of the local player
+     * @return The username of the local player
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Are we connected to a server?
+     * @return Are we connected to a server?
+     */
     public boolean isConnected() {
         return isConnected;
     }
 
+    /**
+     * Subscribe to the Connection's InputHandler
+     * @param inputListener InputListener to notify
+     */
     public void subscribe(InputListener inputListener) {
         connection.getInputHandler().subscribe(inputListener);
     }
 
-    public void sendCommand(Command command, String argument) {
-        Command.sendCommand(connection, command, argument);
+    /**
+     * Send a command through the Connection using the Command ENUM
+     * @param command The command to send
+     * @param parameter The parameter to use with the command
+     */
+    public void sendCommand(Command command, String parameter) {
+        Command.sendCommand(connection, command, parameter);
     }
 
+    /**
+     * Send a command through the Connection using the Command ENUM
+     * @param command The command to send
+     */
     public void sendCommand(Command command) {
         Command.sendCommand(connection, command);
     }
 
-    public DelegateInputListener getDelegateInputListener() {
-        return delegateInputListener;
+    /**
+     * Get the DelegateInputHandler belonging to the Network instance
+     * @return DelegateInputHandler belonging to the Network instance
+     */
+    public DelegateInputHandler getDelegateInputHandler() {
+        return delegateInputHandler;
     }
+    /**
+     * Get the NetworkHandler belonging to the Network instance
+     * @return NetworkHandler belonging to the Network instance
+     */
     public NetworkHandler getNetworkHandler() { return networkHandler; }
+    /**
+     * Get the OnlineLobbyPanelNetworkHandler belonging to the Network instance
+     * @return OnlineLobbyPanelNetworkHandler belonging to the Network instance
+     */
     public OnlineLobbyPanelNetworkHandler getOnlineLobbyPanelNetworkHandler() { return onlineLobbyPanelNetworkHandler; }
 }

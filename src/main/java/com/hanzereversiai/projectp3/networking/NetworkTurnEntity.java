@@ -15,6 +15,10 @@ public class NetworkTurnEntity extends AbstractTurnEntity {
         super(EntityType.AI, name);
     }
 
+    /**
+     * Implement takeTurn, we don't do anything with it because it it handled from the Network
+     * @param abstractGameInstance
+     */
     @Override
     public void takeTurn(AbstractGameInstance abstractGameInstance) { }
 }

@@ -9,8 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 
+/**
+ *
+ */
 public class OnlineLobbyPanelController {
-
 
     public SplitPane lobbyPanelRoot;
     public VBox playerList;

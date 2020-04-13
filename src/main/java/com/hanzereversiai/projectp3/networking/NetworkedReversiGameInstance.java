@@ -34,6 +34,7 @@ public class NetworkedReversiGameInstance extends ReversiGameInstance implements
         int move = (width * y) + x;
         NetworkSingleton.getNetworkInstance().sendCommand(Command.MOVE, String.valueOf(move));
     }
+
     /**
      * Do a turn on the GameBoard
      *
