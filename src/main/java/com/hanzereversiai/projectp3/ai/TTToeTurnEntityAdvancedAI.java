@@ -4,12 +4,22 @@ import com.thowv.javafxgridgameboard.*;
 import com.thowv.javafxgridgameboard.premades.tictactoe.TTToeAlgorithms;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-
+/*
+* The AI for Tic-Tac-Toe
+* @author Shandor
+*/
 public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
+    /*
+    * @param the name
+    */
     public TTToeTurnEntityAdvancedAI(String name) {
         super(EntityType.AI, name);
     }
-
+    /*
+     * @author Shandor and Thomas
+     * @param GameInstance
+     * takes a turn
+     */
     @Override
     public void takeTurn(AbstractGameInstance gameInstance) {
         GameBoardTile best = findBestMove(gameInstance);
@@ -19,13 +29,21 @@ public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
         pauseTransition.setOnFinished((e) -> gameInstance.doTurn(best.getXCord(),best.getYCord()));
         pauseTransition.play();
     }
-
-    // This function returns true if there are moves remaining on the board. It returns false if there are no moves left to play.
+    /*
+     * @author Shandor
+     * @param a gameInstance
+     * @return True if there is a tile free, False if there is no tile free
+     * This function returns true if there are moves remaining on the board. It returns false if there are no moves left to play.
+     */
     static Boolean hasMovesLeft(AbstractGameInstance gameInstance) {
         return gameInstance.getGameBoard().getTilesByType(GameBoardTileType.HIDDEN).size() > 0;
     }
-
-    // This is an evaluation function
+    /*
+     * @author Shandor
+     * @param the GameBoard and the GameTileType(of this Entity)
+     * @return a score value
+     * This is an evaluation function
+     */
     static int evaluate(GameBoard gameBoard, GameBoardTileType gameBoardTileType) {
         if (TTToeAlgorithms.checkThreeInRow(gameBoard.getAllTiles()) == gameBoardTileType)
             return +10;
@@ -34,8 +52,12 @@ public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
         else
             return 0;
     }
-
-    //minMax func
+    /*
+     * @author Shandor
+     * @param the Gameinstance, depth and a bool for max or min
+     * @return score value of the move
+     * this is the minmax function that give values to every move
+     */
     static int minMax(AbstractGameInstance gameInstance, int depth, Boolean isMax) {
         int score = evaluate(gameInstance.getGameBoard(), gameInstance.getCurrentTurnEntity().getGameBoardTileType());
 
@@ -95,7 +117,12 @@ public class TTToeTurnEntityAdvancedAI extends AbstractTurnEntity {
         }
     }
 
-    // This will return the best possible move for the AI
+    /*
+     * @author Shandor
+     * @param the GameInstance
+     * @return the best GameTile
+     * This will return the best possible move for the AI
+     */
     static GameBoardTile findBestMove(AbstractGameInstance gameInstance) {
         int bestVal = -1000;
         int bestMoveX = -1;
