@@ -250,7 +250,7 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
                 } else if(gameBoardTiles[x][y].getGameBoardTileType() == AlgorithmHelper.flipTileType(currentTileType)){
 
                     // This tile belongs to the opponent, so subtract it from the score
-
+                  
                     scoreCurrentMinusOpponent -= this.tileWeights[x][y];
                 }
             }
