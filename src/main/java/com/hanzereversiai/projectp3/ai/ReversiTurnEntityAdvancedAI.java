@@ -8,27 +8,34 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
-//import java.util.concurrent.TimeUnit;
 
 public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 
     private int[][] tileWeights;
+    private int nOfMovesAhead;
 
-    public ReversiTurnEntityAdvancedAI(String name) {
+    public ReversiTurnEntityAdvancedAI(String name)
+    {
+        // 5 moves ahead seems to be ideal (good combination of calculating far ahead but remaining realistic)
+        this(name, 5);
+    }
+
+    public ReversiTurnEntityAdvancedAI(String name, int nOfMovesAhead)
+    {
         super(name);
 
+        this.nOfMovesAhead = nOfMovesAhead;
         this.initiateWeights();
     }
 
     @Override
-    public void takeTurn(AbstractGameInstance gameInstance) {
+    public void takeTurn(AbstractGameInstance gameInstance)
+    {
         takeTurn((ReversiGameInstance)gameInstance);
     }
 
-    private void takeTurn(ReversiGameInstance gameInstance) {
+    private void takeTurn(ReversiGameInstance gameInstance)
+    {
         ArrayList<GameBoardTile> possibleGameBoardTiles = ReversiAlgorithms.determineTilePossibilities(
                 gameInstance.getGameBoard().getAllTiles(), getGameBoardTileType());
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
@@ -60,15 +67,13 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
         int bestScoreYet = -9999;
         GameBoardTile bestTileYet = possibleMoves.get(0);
 
-//        HashMap<GameBoardTile, Integer> moveScores = new HashMap<>();
-
         for(GameBoardTile possibleMove : possibleMoves){
             GameBoardTile[][] gameBoardTiles = gameInstance.getGameBoard().getAllTiles();
 
             GameBoardTileType[][] resetArray = this.getResetArray(gameBoardTiles);
 
             int moveScore = getScoreAfterMove(gameBoardTiles, possibleMove, currentTileType);
-            moveScore += getNextMoveScore(gameBoardTiles, 15, 0, false, AlgorithmHelper.flipTileType(currentTileType));
+            moveScore += getNextMoveScore(gameBoardTiles, this.nOfMovesAhead, 0, false, AlgorithmHelper.flipTileType(currentTileType));
             this.resetBoardTo(gameBoardTiles, resetArray);
 
             if(moveScore > bestScoreYet){
@@ -76,44 +81,6 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
                 bestScoreYet = moveScore;
             }
         }
-
-        // TODO: fix threading issues, board seems to be shared among threads
-//        ExecutorService executorService = Executors.newCachedThreadPool();
-//
-//        for(GameBoardTile possibleMove : possibleMoves){
-//            executorService.execute(new Runnable(){
-//                @Override
-//                public void run() {
-//                    GameBoard copiedGameBoard = copyGameBoard(gameInstance.getGameBoard());
-//                    int moveScore = getScoreAfterMove(copiedGameBoard, possibleMove, currentTileType);
-//                    moveScore += getNextMoveScore(copiedGameBoard, 15, 0, false, AlgorithmHelper.flipTileType(currentTileType));
-//                    gameInstance.getGameBoard().setTileType(possibleMove.getXCord(), possibleMove.getYCord(), GameBoardTileType.HIDDEN);
-//
-//                    moveScores.put(possibleMove, moveScore);
-//                }
-//            });
-//        }
-//
-//        executorService.shutdown();
-//
-//        try {
-//            if(!executorService.awaitTermination(8, TimeUnit.SECONDS)){
-//                executorService.shutdownNow();
-//            }
-//        } catch (InterruptedException e){
-//            e.printStackTrace();
-//            executorService.shutdownNow();
-//        }
-//
-//        for(HashMap.Entry<GameBoardTile, Integer> entry : moveScores.entrySet()){
-//            GameBoardTile move = entry.getKey();
-//            Integer moveScore = entry.getValue();
-//
-//            if(moveScore > bestScoreYet){
-//                bestTileYet = move;
-//                bestScoreYet = moveScore;
-//            }
-//        }
 
         return bestTileYet;
     }
@@ -190,7 +157,7 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
             for(int y = 0; y < 8; y++){
                 if(gameBoardTiles[x][y].getGameBoardTileType() == currentTileType){
                     scoreCurrentMinusOpponent += this.tileWeights[x][y];
-                } else {
+                } else if(gameBoardTiles[x][y].getGameBoardTileType() == AlgorithmHelper.flipTileType(currentTileType)){
                     scoreCurrentMinusOpponent -= this.tileWeights[x][y];
                 }
             }
@@ -201,8 +168,6 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
 
     private void initiateWeights()
     {
-        // TODO: experiment with dynamic weights, I.E.: change [1, 1] from -24 to 99 when [0, 0] is already filled
-        // TODO: at the endgame, the weights wont properly represent the real worth of the tile, causing the AI to make bad choices
         int[][] weights = {
             {99,  -8,  8,  6,  6,  8,  -8, 99},
             {-8, -24, -4, -3, -3, -4, -24, -8},
