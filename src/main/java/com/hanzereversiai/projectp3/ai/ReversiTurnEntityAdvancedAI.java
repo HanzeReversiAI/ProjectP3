@@ -68,7 +68,7 @@ public class ReversiTurnEntityAdvancedAI extends AbstractTurnEntityRandomAI {
             GameBoardTileType[][] resetArray = this.getResetArray(gameBoardTiles);
 
             int moveScore = getScoreAfterMove(gameBoardTiles, possibleMove, currentTileType);
-            moveScore += getNextMoveScore(gameBoardTiles, 5, 0, false, AlgorithmHelper.flipTileType(currentTileType));
+            moveScore += getNextMoveScore(gameBoardTiles, 15, 0, false, AlgorithmHelper.flipTileType(currentTileType));
             this.resetBoardTo(gameBoardTiles, resetArray);
 
             if(moveScore > bestScoreYet){
