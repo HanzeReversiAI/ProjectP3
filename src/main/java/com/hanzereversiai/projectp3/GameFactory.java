@@ -85,8 +85,10 @@ public class GameFactory {
             for (int i = 0; i < playerOptions.length; i++) {
                 if (playerOptions[i].equals("Player"))
                     turnEntities[i] = new TTToeTurnEntityPlayer("You");
-                else if(playerOptions[i].equals("Network"))
-                    turnEntities[i] = new NetworkTurnEntity("Network player");
+                else if(playerOptions[i].contains("Network")) {
+                    String[] info = playerOptions[i].split("-");
+                    turnEntities[i] = new NetworkTurnEntity(info[1]);
+                }
             }
 
             gameInstance = new NetworkedTicTacToeGameInstance(gameBoard, turnEntities[0], turnEntities[1]);
