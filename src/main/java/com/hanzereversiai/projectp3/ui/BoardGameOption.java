@@ -2,9 +2,10 @@ package com.hanzereversiai.projectp3.ui;
 
 import javafx.scene.image.Image;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 /**
  * @author Thomas
@@ -47,12 +48,9 @@ public class BoardGameOption {
      * @return The description of the board game
      */
     public String getDescription() {
-        try {
-            return Files.readString(Paths.get(
-                    BoardGameOption.class.getResource("/" + shortName + "-description.txt").getPath().substring(1)));
-        }
-        catch (IOException e) {
-            return "Could not get description.";
-        }
+        InputStream inputStream = getClass().getResourceAsStream("/" + shortName + "-description.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+        return reader.lines().collect(Collectors.joining(System.lineSeparator()));
     }
 }
