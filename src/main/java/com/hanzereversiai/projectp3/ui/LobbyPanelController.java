@@ -15,8 +15,8 @@ import java.io.IOException;
  * @author Thomas
  */
 public class LobbyPanelController {
-    Parent offlineLobbyPanel;
-    Parent onlineLobbyPanel;
+    private Parent offlineLobbyPanel;
+    private Parent onlineLobbyPanel;
 
     public Button onlineButton;
     public Button offlineButton;

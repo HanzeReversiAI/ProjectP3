@@ -114,7 +114,8 @@ public class GamePanelController {
             endLabel.setId("end-message-label");
             centerStackPane.getChildren().add(endLabel);
 
-            NetworkSingleton.getNetworkInstance().getNetworkHandler().setRootUIObject(centerStackPane);
+            if (NetworkSingleton.getNetworkInstance().getNetworkHandler() != null)
+                NetworkSingleton.getNetworkInstance().getNetworkHandler().setRootUIObject(centerStackPane);
         });
     }
 
